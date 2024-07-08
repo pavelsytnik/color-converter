@@ -55,15 +55,16 @@ float _hue_to_rgb(float p, float q, float t)
 struct hsl rgb_to_hsl(float r, float g, float b)
 {
     struct hsl color;
+    float max, min;
 
     r /= 255;
     g /= 255;
     b /= 255;
 
-    float max = r >= g && r >= b ? r
+    max = r >= g && r >= b ? r
               : g >= r && g >= b ? g
               : b;
-    float min = r < g && r < b ? r
+    min = r < g && r < b ? r
               : g < r && g < b ? g
               : b;
 
@@ -88,4 +89,4 @@ struct hsl rgb_to_hsl(float r, float g, float b)
     return color;
 }
 
-#endif // RGBHSL_H
+#endif /* RGBHSL_H */
