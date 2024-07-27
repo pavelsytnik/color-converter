@@ -16,7 +16,9 @@ typedef struct rgb {
 struct rgb hsl_to_rgb(float h, float s, float l);
 struct hsl rgb_to_hsl(float r, float g, float b);
 
-float _hue_to_rgb(float p, float q, float t);
+#ifdef RGBHSL_IMPLEMENTATION
+
+static float _hue_to_rgb(float p, float q, float t);
 
 struct rgb hsl_to_rgb(float h, float s, float l)
 {
@@ -36,7 +38,7 @@ struct rgb hsl_to_rgb(float h, float s, float l)
     return color;
 }
 
-float _hue_to_rgb(float p, float q, float t)
+static float _hue_to_rgb(float p, float q, float t)
 {
     if (t < 0)
         t += 1;
@@ -89,4 +91,5 @@ struct hsl rgb_to_hsl(float r, float g, float b)
     return color;
 }
 
+#endif /* RGBHSL_IMPLEMENTATION */
 #endif /* RGBHSL_H */
