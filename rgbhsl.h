@@ -16,6 +16,9 @@ typedef struct rgb {
 struct rgb hsl_to_rgb(float h, float s, float l);
 struct hsl rgb_to_hsl(float r, float g, float b);
 
+void invert_rgb(struct rgb *);
+void invert_hsl(struct hsl *);
+
 #ifdef RGBHSL_IMPLEMENTATION
 
 static float _hue_to_rgb(float p, float q, float t);
@@ -89,6 +92,20 @@ struct hsl rgb_to_hsl(float r, float g, float b)
     }
 
     return color;
+}
+
+void invert_rgb(struct rgb *color)
+{
+    color->r = ~color->r;
+    color->g = ~color->g;
+    color->b = ~color->b;
+}
+
+void invert_hsl(struct hsl *color)
+{
+    color->h += color->h < 0.5f ? 0.5f : -0.5f;
+    color->s = 100 - color->s;
+    color->l = 100 - color->l;
 }
 
 #endif /* RGBHSL_IMPLEMENTATION */
