@@ -104,8 +104,8 @@ void invert_rgb(struct rgb *color)
 void invert_hsl(struct hsl *color)
 {
     color->h += color->h < 0.5f ? 0.5f : -0.5f;
-    color->s = 100 - color->s;
-    color->l = 100 - color->l;
+    color->s = 1 - color->s;
+    color->l = 1 - color->l;
 }
 
 #endif /* RGBHSL_IMPLEMENTATION */
