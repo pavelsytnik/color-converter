@@ -31,12 +31,12 @@ struct rgb hsl_to_rgb(float h, float s, float l)
     if (s == 0)
         color.r = color.g = color.b = l;
     else {
-        float q = l < 0.5 ? l * (1 + s) : l + s - l * s;
+        float q = l < 0.5f ? l * (1 + s) : l + s - l * s;
         float p = 2 * l - q;
 
-        color.r = _hue_to_rgb(p, q, h + 1./3) * 255;
+        color.r = _hue_to_rgb(p, q, h + 1/3.f) * 255;
         color.g = _hue_to_rgb(p, q, h) * 255;
-        color.b = _hue_to_rgb(p, q, h - 1./3) * 255;
+        color.b = _hue_to_rgb(p, q, h - 1/3.f) * 255;
     }
 
     return color;
@@ -49,12 +49,12 @@ static float _hue_to_rgb(float p, float q, float t)
     if (t > 1)
         t -= 1;
 
-    if (t < 1./6)
+    if (t < 1/6.f)
         return p + (q - p) * 6 * t;
-    if (t < 1./2)
+    if (t < 1/2.f)
         return q;
-    if (t < 2./3)
-        return p + (q - p) * (2./3 - t) * 6;
+    if (t < 2/3.f)
+        return p + (q - p) * (2/3.f - t) * 6;
     return p;
 }
 
@@ -86,7 +86,7 @@ struct hsl rgb_to_hsl(float r, float g, float b)
         color.h = color.s = 0;
     else {
         float d = max - min;
-        color.s = color.l > 0.5 ? d / (2 - max - min) : d / (max + min);
+        color.s = color.l > 0.5f ? d / (2 - max - min) : d / (max + min);
 
         if (max == r)
             color.h = (g - b) / d + (g < b ? 6 : 0);
