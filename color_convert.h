@@ -1,5 +1,5 @@
-#ifndef RGBHSL_H
-#define RGBHSL_H
+#ifndef COLOR_CONVERT_H
+#define COLOR_CONVERT_H
 
 typedef struct hsl {
     float h;
@@ -19,7 +19,7 @@ struct hsl rgb_to_hsl(float r, float g, float b);
 void invert_rgb(struct rgb *);
 void invert_hsl(struct hsl *);
 
-#ifdef RGBHSL_IMPLEMENTATION
+#ifdef COLOR_CONVERT_IMPLEMENTATION
 
 static float _hue_to_rgb(float p, float q, float t);
 
@@ -108,5 +108,5 @@ void invert_hsl(struct hsl *color)
     color->l = 1 - color->l;
 }
 
-#endif /* RGBHSL_IMPLEMENTATION */
-#endif /* RGBHSL_H */
+#endif /* COLOR_CONVERT_IMPLEMENTATION */
+#endif /* COLOR_CONVERT_H */
