@@ -23,6 +23,9 @@ struct rgb rgb(unsigned char r, unsigned char g, unsigned char b);
 struct hsl hsl(float hue, float saturation, float lightness);
 struct hsv hsv(float hue, float saturation, float value);
 
+int hsl_valid(const struct hsl *);
+int hsv_valid(const struct hsv *);
+
 struct rgb hsl2rgb(const struct hsl *);
 struct rgb hex2rgb(int code);
 struct hsl rgb2hsl(const struct rgb *);
@@ -50,6 +53,30 @@ struct hsv hsv(float h, float s, float v)
 {
     struct hsv color = { h/360, s/100, v/100 };
     return color;
+}
+
+int hsl_valid(const struct hsl *color)
+{
+    if (color->h < 0 || color->h >= 1)
+        return 0;
+    if (color->s < 0 || color->s > 1)
+        return 0;
+    if (color->l < 0 || color->l > 1)
+        return 0;
+
+    return 1;
+}
+
+int hsv_valid(const struct hsv *color)
+{
+    if (color->h < 0 || color->h >= 1)
+        return 0;
+    if (color->s < 0 || color->s > 1)
+        return 0;
+    if (color->v < 0 || color->v > 1)
+        return 0;
+
+    return 1;
 }
 
 struct rgb hsl2rgb(const struct hsl *in)
