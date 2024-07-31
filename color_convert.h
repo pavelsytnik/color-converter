@@ -25,7 +25,6 @@ struct hsl rgb2hsl(const struct rgb *);
 struct hsv rgb2hsv(const struct rgb *);
 
 void rgb_invert(struct rgb *);
-void hsl_invert(struct hsl *);
 
 #ifdef COLOR_CONVERT_IMPLEMENTATION
 
@@ -143,13 +142,6 @@ void rgb_invert(struct rgb *color)
     color->r = ~color->r;
     color->g = ~color->g;
     color->b = ~color->b;
-}
-
-void hsl_invert(struct hsl *color)
-{
-    color->h += color->h < 0.5f ? 0.5f : -0.5f;
-    color->s = 1 - color->s;
-    color->l = 1 - color->l;
 }
 
 #endif /* COLOR_CONVERT_IMPLEMENTATION */

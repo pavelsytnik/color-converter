@@ -19,7 +19,6 @@ int main(void)
     rgb_color = hsl2rgb(&hsl_color);
 
     rgb_invert(&rgb_color);
-    hsl_invert(&hsl_color);
     
     return 0;
 }
