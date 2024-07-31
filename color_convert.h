@@ -7,6 +7,12 @@ typedef struct hsl {
     float l;
 } hsl;
 
+typedef struct hsv {
+    float h;
+    float s;
+    float v;
+} hsv;
+
 typedef struct rgb {
     unsigned char r;
     unsigned char g;
@@ -16,6 +22,7 @@ typedef struct rgb {
 struct rgb hsl_to_rgb(float h, float s, float l);
 struct rgb hex_to_rgb(int code);
 struct hsl rgb_to_hsl(float r, float g, float b);
+struct hsv rgb2hsv(const struct rgb *);
 
 void invert_rgb(struct rgb *);
 void invert_hsl(struct hsl *);
@@ -95,6 +102,39 @@ struct hsl rgb_to_hsl(float r, float g, float b)
     }
 
     return color;
+}
+
+struct hsv rgb2hsv(const struct rgb *color)
+{
+    float r = color->r / 255.f;
+    float g = color->g / 255.f;
+    float b = color->b / 255.f;
+
+    float cmax = r > (g > b ? g : b) ? r : g > b ? g : b;
+    float cmin = r < (g < b ? g : b) ? r : g < b ? g : b;
+
+    float dif = cmax - cmin;
+
+    struct hsv out;
+
+    out.v = cmax;
+
+    if (dif == 0)
+        out.h = 0;
+    else if (out.v == r)
+        out.h = (g - b) / dif + (g < b ? 6 : 0);
+    else if (out.v == g)
+        out.h = (b - r) / dif + 2;
+    else if (out.v == b)
+        out.h = (r - g) / dif + 4;
+    out.h /= 6;
+
+    if (out.v == 0)
+        out.s = 0;
+    else
+        out.s = dif / out.v;
+
+    return out;
 }
 
 void invert_rgb(struct rgb *color)
