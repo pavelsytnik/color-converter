@@ -73,12 +73,8 @@ struct hsl rgb_to_hsl(float r, float g, float b)
     g /= 255;
     b /= 255;
 
-    max = r >= g && r >= b ? r
-        : g >= r && g >= b ? g
-        : b;
-    min = r < g && r < b ? r
-        : g < r && g < b ? g
-        : b;
+    max = r > (g > b ? g : b) ? r : g > b ? g : b;
+    min = r < (g < b ? g : b) ? r : g < b ? g : b;
 
     color.h = color.s = color.l = (max + min) / 2;
 
