@@ -19,34 +19,35 @@ typedef struct rgb {
     unsigned char b;
 } rgb;
 
-struct rgb hsl_to_rgb(float h, float s, float l);
-struct rgb hex_to_rgb(int code);
-struct hsl rgb_to_hsl(float r, float g, float b);
+struct rgb hsl2rgb(const struct hsl *);
+struct rgb hex2rgb(int code);
+struct hsl rgb2hsl(const struct rgb *);
 struct hsv rgb2hsv(const struct rgb *);
 
-void invert_rgb(struct rgb *);
-void invert_hsl(struct hsl *);
+void rgb_invert(struct rgb *);
+void hsl_invert(struct hsl *);
 
 #ifdef COLOR_CONVERT_IMPLEMENTATION
 
 static float _hue_to_rgb(float p, float q, float t);
 
-struct rgb hsl_to_rgb(float h, float s, float l)
+struct rgb hsl2rgb(const struct hsl *in)
 {
-    struct rgb color;
+    struct rgb out;
     
-    if (s == 0)
-        color.r = color.g = color.b = l;
+    if (in->s == 0)
+        out.r = out.g = out.b = in->l;
     else {
-        float q = l < 0.5f ? l * (1 + s) : l + s - l * s;
-        float p = 2 * l - q;
+        float q = in->l < 0.5f ? in->l * (1 + in->s)
+                               : in->l + in->s - in->l * in->s;
+        float p = 2 * in->l - q;
 
-        color.r = _hue_to_rgb(p, q, h + 1/3.f) * 255;
-        color.g = _hue_to_rgb(p, q, h) * 255;
-        color.b = _hue_to_rgb(p, q, h - 1/3.f) * 255;
+        out.r = _hue_to_rgb(p, q, in->h + 1/3.f) * 255;
+        out.g = _hue_to_rgb(p, q, in->h) * 255;
+        out.b = _hue_to_rgb(p, q, in->h - 1/3.f) * 255;
     }
 
-    return color;
+    return out;
 }
 
 static float _hue_to_rgb(float p, float q, float t)
@@ -65,86 +66,86 @@ static float _hue_to_rgb(float p, float q, float t)
     return p;
 }
 
-struct rgb hex_to_rgb(int code)
+struct rgb hex2rgb(int code)
 {
-    struct rgb color = { code >> 16, code >> 8, code };
-    return color;
+    struct rgb out = { code >> 16, code >> 8, code };
+    return out;
 }
 
-struct hsl rgb_to_hsl(float r, float g, float b)
+struct hsl rgb2hsl(const struct rgb *in)
 {
-    struct hsl color;
-    float max, min;
+    struct hsl out;
 
-    r /= 255;
-    g /= 255;
-    b /= 255;
-
-    max = r > (g > b ? g : b) ? r : g > b ? g : b;
-    min = r < (g < b ? g : b) ? r : g < b ? g : b;
-
-    color.h = color.s = color.l = (max + min) / 2;
-
-    if (max == min)
-        color.h = color.s = 0;
-    else {
-        float d = max - min;
-        color.s = color.l > 0.5f ? d / (2 - max - min) : d / (max + min);
-
-        if (max == r)
-            color.h = (g - b) / d + (g < b ? 6 : 0);
-        else if (max == g)
-            color.h = (b - r) / d + 2;
-        else if (max == b)
-            color.h = (r - g) / d + 4;
-
-        color.h /= 6;
-    }
-
-    return color;
-}
-
-struct hsv rgb2hsv(const struct rgb *color)
-{
-    float r = color->r / 255.f;
-    float g = color->g / 255.f;
-    float b = color->b / 255.f;
+    float r = in->r / 255.f;
+    float g = in->g / 255.f;
+    float b = in->b / 255.f;
 
     float cmax = r > (g > b ? g : b) ? r : g > b ? g : b;
     float cmin = r < (g < b ? g : b) ? r : g < b ? g : b;
 
-    float dif = cmax - cmin;
+    out.l = (cmax + cmin) / 2;
 
-    struct hsv out;
+    if (cmax == cmin)
+        out.h = out.s = 0;
+    else {
+        float d = cmax - cmin;
 
-    out.v = cmax;
+        out.s = out.l > 0.5f ? d / (2 - cmax - cmin) : d / (cmax + cmin);
 
-    if (dif == 0)
-        out.h = 0;
-    else if (out.v == r)
-        out.h = (g - b) / dif + (g < b ? 6 : 0);
-    else if (out.v == g)
-        out.h = (b - r) / dif + 2;
-    else if (out.v == b)
-        out.h = (r - g) / dif + 4;
-    out.h /= 6;
-
-    if (out.v == 0)
-        out.s = 0;
-    else
-        out.s = dif / out.v;
+        if (cmax == r)
+            out.h = (g - b) / d + (g < b ? 6 : 0);
+        else if (cmax == g)
+            out.h = (b - r) / d + 2;
+        else if (cmax == b)
+            out.h = (r - g) / d + 4;
+        out.h /= 6;
+    }
 
     return out;
 }
 
-void invert_rgb(struct rgb *color)
+struct hsv rgb2hsv(const struct rgb *in)
+{
+    struct hsv out;
+
+    float r = in->r / 255.f;
+    float g = in->g / 255.f;
+    float b = in->b / 255.f;
+
+    float cmax = r > (g > b ? g : b) ? r : g > b ? g : b;
+    float cmin = r < (g < b ? g : b) ? r : g < b ? g : b;
+    float d = cmax - cmin;
+
+    out.v = cmax;
+
+    if (d == 0)
+        out.h = 0;
+    else {
+        if (cmax == r)
+            out.h = (g - b) / d + (g < b ? 6 : 0);
+        else if (cmax == g)
+            out.h = (b - r) / d + 2;
+        else if (cmax == b)
+            out.h = (r - g) / d + 4;
+        out.h /= 6;
+    }
+
+    if (cmax == 0)
+        out.s = 0;
+    else
+        out.s = d / out.v;
+
+    return out;
+}
+
+void rgb_invert(struct rgb *color)
 {
     color->r = ~color->r;
     color->g = ~color->g;
     color->b = ~color->b;
 }
 
-void invert_hsl(struct hsl *color)
+void hsl_invert(struct hsl *color)
 {
     color->h += color->h < 0.5f ? 0.5f : -0.5f;
     color->s = 1 - color->s;

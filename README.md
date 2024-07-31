@@ -8,15 +8,18 @@
 
 int main(void)
 {
-    struct rgb rgb_color = hsl_to_rgb(15/360.f, 1.f, 0.5f);
+    struct rgb rgb_color = { 127, 63, 31 };
+    struct hsl hsl_color = rgb2hsl(&rgb_color);
+
     printf("rgb(%d, %d, %d)\n", rgb_color.r, rgb_color.g, rgb_color.b);
+    printf("hsl(%f degrees, %f %%, %f %%)\n",
+           hsl_color.h * 360, hsl_color.s * 100, hsl_color.l * 100);
 
-    struct hsl hsl_color = rgb_to_hsl(158, 74, 26);
-    printf("hsl(%f degrees, %f %%, %f %%)\n", hsl_color.h * 360, hsl_color.s * 100, hsl_color.l * 100);
+    rgb_color = hex2rgb(0xABCDEF);
+    rgb_color = hsl2rgb(&hsl_color);
 
-    rgb_color = hex_to_rgb(0xABCDEF);
-
-    invert_hsl(&hsl_color);
+    rgb_invert(&rgb_color);
+    hsl_invert(&hsl_color);
     
     return 0;
 }
