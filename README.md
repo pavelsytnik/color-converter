@@ -8,8 +8,8 @@
 
 int main(void)
 {
-    struct rgb rgb_color = { 127, 63, 31 };
-    struct hsl hsl_color = rgb2hsl(&rgb_color);
+    struct rgb rgb_color = rgb(127, 63, 31);
+    struct hsl hsl_color = hsl(180, 100, 50); /* degrees then percents */
 
     printf("rgb(%d, %d, %d)\n", rgb_color.r, rgb_color.g, rgb_color.b);
     printf("hsl(%f degrees, %f %%, %f %%)\n",
@@ -17,7 +17,8 @@ int main(void)
 
     rgb_color = hex2rgb(0xABCDEF);
     rgb_color = hsl2rgb(&hsl_color);
-
+    hsl_color = rgb2hsl(&rgb_color);
+    
     rgb_invert(&rgb_color);
     
     return 0;

@@ -5,19 +5,23 @@ typedef struct hsl {
     float h;
     float s;
     float l;
-} hsl;
+} hsl_t;
 
 typedef struct hsv {
     float h;
     float s;
     float v;
-} hsv;
+} hsv_t;
 
 typedef struct rgb {
     unsigned char r;
     unsigned char g;
     unsigned char b;
-} rgb;
+} rgb_t;
+
+struct rgb rgb(unsigned char r, unsigned char g, unsigned char b);
+struct hsl hsl(float hue, float saturation, float lightness);
+struct hsv hsv(float hue, float saturation, float value);
 
 struct rgb hsl2rgb(const struct hsl *);
 struct rgb hex2rgb(int code);
@@ -29,6 +33,24 @@ void rgb_invert(struct rgb *);
 #ifdef COLOR_CONVERT_IMPLEMENTATION
 
 static float _hue_to_rgb(float p, float q, float t);
+
+struct rgb rgb(unsigned char r, unsigned char g, unsigned char b)
+{
+    struct rgb color = { r, g, b };
+    return color;
+}
+
+struct hsl hsl(float h, float s, float l)
+{
+    struct hsl color = { h/360, s/100, l/100 };
+    return color;
+}
+
+struct hsv hsv(float h, float s, float v)
+{
+    struct hsv color = { h/360, s/100, v/100 };
+    return color;
+}
 
 struct rgb hsl2rgb(const struct hsl *in)
 {
