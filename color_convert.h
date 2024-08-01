@@ -43,19 +43,19 @@ struct rgb rgb(unsigned char r, unsigned char g, unsigned char b)
 
 struct hsl hsl(float h, float s, float l)
 {
-    struct hsl color = { h/360, s/100, l/100 };
+    struct hsl color = { h, s, l };
     return color;
 }
 
 struct hsv hsv(float h, float s, float v)
 {
-    struct hsv color = { h/360, s/100, v/100 };
+    struct hsv color = { h, s, v };
     return color;
 }
 
 int hsl_valid(const struct hsl *color)
 {
-    if (color->h < 0 || color->h >= 1)
+    if (color->h < 0 || color->h >= 360)
         return 0;
     if (color->s < 0 || color->s > 1)
         return 0;
@@ -67,7 +67,7 @@ int hsl_valid(const struct hsl *color)
 
 int hsv_valid(const struct hsv *color)
 {
-    if (color->h < 0 || color->h >= 1)
+    if (color->h < 0 || color->h >= 360)
         return 0;
     if (color->s < 0 || color->s > 1)
         return 0;
@@ -92,8 +92,8 @@ do {                     \
 struct rgb hsl2rgb(const struct hsl *in)
 {
     struct rgb out;
-    
-    float h = in->h * 6, s = in->s, l = in->l;
+
+    float h = in->h/60, s = in->s, l = in->l;
 
     float c = (1 - _abs(2*l - 1)) * s;
     float x = c * (1 - _abs(_fmod(h, 2) - 1));
@@ -158,7 +158,7 @@ struct hsl rgb2hsl(const struct rgb *in)
             out.h = (b - r) / d + 2;
         else if (cmax == b)
             out.h = (r - g) / d + 4;
-        out.h /= 6;
+        out.h *= 60;
     }
 
     return out;
@@ -187,7 +187,7 @@ struct hsv rgb2hsv(const struct rgb *in)
             out.h = (b - r) / d + 2;
         else if (cmax == b)
             out.h = (r - g) / d + 4;
-        out.h /= 6;
+        out.h *= 60;
     }
 
     if (cmax == 0)
