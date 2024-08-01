@@ -35,8 +35,6 @@ void rgb_invert(struct rgb *);
 
 #ifdef COLOR_CONVERT_IMPLEMENTATION
 
-static float _hue_to_rgb(float p, float q, float t);
-
 struct rgb rgb(unsigned char r, unsigned char g, unsigned char b)
 {
     struct rgb color = { r, g, b };
@@ -79,40 +77,54 @@ int hsv_valid(const struct hsv *color)
     return 1;
 }
 
+#define _trunc(x) ((float) (int) (x))
+#define _abs(x) ((x) >= 0 ? (x) : -(x))
+#define _fmod(x, y) ((x) - _trunc((x) / (y)) * (y))
+
+/* Set (r,g,b) defined in hsl2rgb() */
+#define _RGB(_r, _g, _b) \
+do {                     \
+    r = _r;              \
+    g = _g;              \
+    b = _b;              \
+} while (0)
+
 struct rgb hsl2rgb(const struct hsl *in)
 {
     struct rgb out;
     
-    if (in->s == 0)
-        out.r = out.g = out.b = in->l;
-    else {
-        float q = in->l < 0.5f ? in->l * (1 + in->s)
-                               : in->l + in->s - in->l * in->s;
-        float p = 2 * in->l - q;
+    float h = in->h * 6, s = in->s, l = in->l;
 
-        out.r = _hue_to_rgb(p, q, in->h + 1/3.f) * 255;
-        out.g = _hue_to_rgb(p, q, in->h) * 255;
-        out.b = _hue_to_rgb(p, q, in->h - 1/3.f) * 255;
-    }
+    float c = (1 - _abs(2*l - 1)) * s;
+    float x = c * (1 - _abs(_fmod(h, 2) - 1));
+    float m = l - c/2;
+
+    float r, g, b;
+
+    if (h >= 0 && h < 1)
+        _RGB(c, x, 0);
+    else if (h >= 1 && h < 2)
+        _RGB(x, c, 0);
+    else if (h >= 2 && h < 3)
+        _RGB(0, c, x);
+    else if (h >= 3 && h < 4)
+        _RGB(0, x, c);
+    else if (h >= 4 && h < 5)
+        _RGB(x, 0, c);
+    else if (h >= 5 && h < 6)
+        _RGB(c, 0, x);
+
+    out.r = (unsigned char) ((r + m) * 255);
+    out.g = (unsigned char) ((g + m) * 255);
+    out.b = (unsigned char) ((b + m) * 255);
 
     return out;
 }
 
-static float _hue_to_rgb(float p, float q, float t)
-{
-    if (t < 0)
-        t += 1;
-    if (t > 1)
-        t -= 1;
-
-    if (t < 1/6.f)
-        return p + (q - p) * 6 * t;
-    if (t < 1/2.f)
-        return q;
-    if (t < 2/3.f)
-        return p + (q - p) * (2/3.f - t) * 6;
-    return p;
-}
+#undef _RGB
+#undef _fmod
+#undef _abs
+#undef _trunc
 
 struct rgb hex2rgb(int code)
 {
