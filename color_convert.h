@@ -39,6 +39,9 @@ void rgb_invert(struct rgb *);
 
 #ifdef COLOR_CONVERT_IMPLEMENTATION
 
+#define _max(x, y) ((x) > (y) ? (x) : (y))
+#define _min(x, y) ((x) < (y) ? (x) : (y))
+
 struct rgb rgb(unsigned char r, unsigned char g, unsigned char b)
 {
     struct rgb color = { r, g, b };
@@ -176,8 +179,8 @@ struct hsl rgb2hsl(const struct rgb *in)
     float g = in->g / 255.f;
     float b = in->b / 255.f;
 
-    float cmax = r > (g > b ? g : b) ? r : g > b ? g : b;
-    float cmin = r < (g < b ? g : b) ? r : g < b ? g : b;
+    float cmax = _max(_max(r, g), b);
+    float cmin = _min(_min(r, g), b);
 
     out.l = (cmax + cmin) / 2;
 
@@ -208,8 +211,8 @@ struct hsv rgb2hsv(const struct rgb *in)
     float g = in->g / 255.f;
     float b = in->b / 255.f;
 
-    float cmax = r > (g > b ? g : b) ? r : g > b ? g : b;
-    float cmin = r < (g < b ? g : b) ? r : g < b ? g : b;
+    float cmax = _max(_max(r, g), b);
+    float cmin = _min(_min(r, g), b);
     float d = cmax - cmin;
 
     out.v = cmax;
@@ -243,7 +246,7 @@ struct hsl hsv2hsl(const struct hsv *in)
     if (out.l == 0 || out.l == 1)
         out.s = 0;
     else
-        out.s = (in->v - out.l) / (out.l < (1 - out.l) ? out.l : 1 - out.l);
+        out.s = (in->v - out.l) / _min(out.l, 1 - out.l);
 
     return out;
 }
@@ -253,7 +256,7 @@ struct hsv hsl2hsv(const struct hsl *in)
     struct hsv out;
 
     out.h = in->h;
-    out.v = in->l + in->s * (in->l < (1 - in->l) ? in->l : 1 - in->l);
+    out.v = in->l + in->s * _min(in->l, 1 - in->l);
     if (out.v == 0)
         out.s = 0;
     else
@@ -273,6 +276,9 @@ void rgb_invert(struct rgb *color)
     color->g = ~color->g;
     color->b = ~color->b;
 }
+
+#undef _min
+#undef _max
 
 #endif /* COLOR_CONVERT_IMPLEMENTATION */
 #endif /* COLOR_CONVERT_H */
