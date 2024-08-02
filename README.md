@@ -1,4 +1,53 @@
-# Usage example
+# Color converter
+
+This is a little header-only library providing such data types for color
+representation as ```RGB```, ```HSL``` and ```HSV```. The library supports
+conversion from a ```HEX``` to an ```RGB``` and vice versa as well.
+
+> [!NOTE]
+> Hexadecimal values are stored in plain integers.
+
+## API
+
+```c
+typedef struct hsl {
+    float h;
+    float s;
+    float l;
+} hsl_t;
+
+typedef struct hsv {
+    float h;
+    float s;
+    float v;
+} hsv_t;
+
+typedef struct rgb {
+    unsigned char r;
+    unsigned char g;
+    unsigned char b;
+} rgb_t;
+
+struct rgb rgb(unsigned char r, unsigned char g, unsigned char b);
+struct hsl hsl(float hue, float saturation, float lightness);
+struct hsv hsv(float hue, float saturation, float value);
+
+int hsl_valid(const struct hsl *);
+int hsv_valid(const struct hsv *);
+
+struct rgb hsl2rgb(const struct hsl *);
+struct rgb hex2rgb(int code);
+struct hsl rgb2hsl(const struct rgb *);
+struct hsv rgb2hsv(const struct rgb *);
+struct rgb hsv2rgb(const struct hsv *);
+struct hsl hsv2hsl(const struct hsv *);
+struct hsv hsl2hsv(const struct hsl *);
+int rgb2hex(const struct rgb *);
+
+void rgb_invert(struct rgb *);
+```
+
+## Usage example
 
 ```c
 #include <stdio.h>
@@ -26,3 +75,11 @@ int main(void)
     return 0;
 }
 ```
+
+## Current state
+
+- [x] RGB
+- [x] HSL
+- [x] HSV
+- [ ] CMYK
+- [ ] Corresponding types with an alpha channel
