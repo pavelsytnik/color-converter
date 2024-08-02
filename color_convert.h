@@ -30,6 +30,10 @@ struct rgb hsl2rgb(const struct hsl *);
 struct rgb hex2rgb(int code);
 struct hsl rgb2hsl(const struct rgb *);
 struct hsv rgb2hsv(const struct rgb *);
+struct rgb hsv2rgb(const struct hsv *);
+struct hsl hsv2hsl(const struct hsv *);
+struct hsv hsl2hsv(const struct hsl *);
+int rgb2hex(const struct rgb *);
 
 void rgb_invert(struct rgb *);
 
@@ -121,6 +125,38 @@ struct rgb hsl2rgb(const struct hsl *in)
     return out;
 }
 
+struct rgb hsv2rgb(const struct hsv *in)
+{
+    struct rgb out;
+
+    float h = in->h/60, s = in->s, v = in->v;
+
+    float c = v * s;
+    float x = c * (1 - _abs(_fmod(h, 2) - 1));
+    float m = v - c;
+
+    float r, g, b;
+
+    if (h >= 0 && h < 1)
+        _RGB(c, x, 0);
+    else if (h >= 1 && h < 2)
+        _RGB(x, c, 0);
+    else if (h >= 2 && h < 3)
+        _RGB(0, c, x);
+    else if (h >= 3 && h < 4)
+        _RGB(0, x, c);
+    else if (h >= 4 && h < 5)
+        _RGB(x, 0, c);
+    else if (h >= 5 && h < 6)
+        _RGB(c, 0, x);
+
+    out.r = (unsigned char)((r + m) * 255);
+    out.g = (unsigned char)((g + m) * 255);
+    out.b = (unsigned char)((b + m) * 255);
+
+    return out;
+}
+
 #undef _RGB
 #undef _fmod
 #undef _abs
@@ -196,6 +232,39 @@ struct hsv rgb2hsv(const struct rgb *in)
         out.s = d / out.v;
 
     return out;
+}
+
+struct hsl hsv2hsl(const struct hsv *in)
+{
+    struct hsl out;
+
+    out.h = in->h;
+    out.l = in->v * (1 - in->s/2);
+    if (out.l == 0 || out.l == 1)
+        out.s = 0;
+    else
+        out.s = (in->v - out.l) / (out.l < (1 - out.l) ? out.l : 1 - out.l);
+
+    return out;
+}
+
+struct hsv hsl2hsv(const struct hsl *in)
+{
+    struct hsv out;
+
+    out.h = in->h;
+    out.v = in->l + in->s * (in->l < (1 - in->l) ? in->l : 1 - in->l);
+    if (out.v == 0)
+        out.s = 0;
+    else
+        out.s = 2 * (1 - in->l/out.v);
+
+    return out;
+}
+
+int rgb2hex(const struct rgb *in)
+{
+    return in->r << 16 | in->g << 8 | in->b;
 }
 
 void rgb_invert(struct rgb *color)
