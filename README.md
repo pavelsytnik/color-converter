@@ -81,5 +81,5 @@ int main(void)
 - [x] RGB
 - [x] HSL
 - [x] HSV
-- [ ] CMYK
+- [x] CMYK
 - [ ] Corresponding types with an alpha channel

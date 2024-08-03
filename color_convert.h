@@ -19,6 +19,13 @@ typedef struct rgb {
     unsigned char b;
 } rgb_t;
 
+typedef struct cmyk {
+    float c;
+    float m;
+    float y;
+    float k;
+} cmyk_t;
+
 struct rgb rgb(unsigned char r, unsigned char g, unsigned char b);
 struct hsl hsl(float hue, float saturation, float lightness);
 struct hsv hsv(float hue, float saturation, float value);
@@ -34,6 +41,8 @@ struct rgb hsv2rgb(const struct hsv *);
 struct hsl hsv2hsl(const struct hsv *);
 struct hsv hsl2hsv(const struct hsl *);
 int rgb2hex(const struct rgb *);
+struct cmyk rgb2cmyk(const struct rgb *);
+struct rgb cmyk2rgb(const struct cmyk *);
 
 void rgb_invert(struct rgb *);
 
@@ -268,6 +277,33 @@ struct hsv hsl2hsv(const struct hsl *in)
 int rgb2hex(const struct rgb *in)
 {
     return in->r << 16 | in->g << 8 | in->b;
+}
+
+struct cmyk rgb2cmyk(const struct rgb *in)
+{
+    struct cmyk out;
+
+    float r = in->r / 255.f;
+    float g = in->g / 255.f;
+    float b = in->b / 255.f;
+
+    out.k = 1 - _max(_max(r, g), b);
+    out.c = (1 - r - out.k) / (1 - out.k);
+    out.m = (1 - g - out.k) / (1 - out.k);
+    out.y = (1 - b - out.k) / (1 - out.k);
+
+    return out;
+}
+
+struct rgb cmyk2rgb(const struct cmyk *in)
+{
+    struct rgb out;
+
+    out.r = 255 * (1 - in->c) * (1 - in->k);
+    out.g = 255 * (1 - in->m) * (1 - in->k);
+    out.b = 255 * (1 - in->y) * (1 - in->k);
+
+    return out;
 }
 
 void rgb_invert(struct rgb *color)
