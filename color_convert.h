@@ -26,20 +26,20 @@ typedef struct cmyk {
     float k;
 } cmyk_t;
 
-int hsl_valid(const struct hsl *);
-int hsv_valid(const struct hsv *);
+int  hsl_valid(const struct hsl  *);
+int  hsv_valid(const struct hsv  *);
 int cmyk_valid(const struct cmyk *);
 
-struct rgb hsl2rgb(const struct hsl *);
-struct rgb hex2rgb(int code);
-struct hsl rgb2hsl(const struct rgb *);
-struct hsv rgb2hsv(const struct rgb *);
-struct rgb hsv2rgb(const struct hsv *);
-struct hsl hsv2hsl(const struct hsv *);
-struct hsv hsl2hsv(const struct hsl *);
-int rgb2hex(const struct rgb *);
-struct cmyk rgb2cmyk(const struct rgb *);
-struct rgb cmyk2rgb(const struct cmyk *);
+void  rgb2hsl (const struct rgb  *in, struct hsl  *out);
+void  rgb2hsv (const struct rgb  *in, struct hsv  *out);
+void  rgb2cmyk(const struct rgb  *in, struct cmyk *out);
+void  rgb2hex (const struct rgb  *in,        int  *out);
+void  hsl2rgb (const struct hsl  *in, struct rgb  *out);
+void  hsv2rgb (const struct hsv  *in, struct rgb  *out);
+void cmyk2rgb (const struct cmyk *in, struct rgb  *out);
+void  hex2rgb (const        int  *in, struct rgb  *out);
+void  hsl2hsv (const struct hsl  *in, struct hsv  *out);
+void  hsv2hsl (const struct hsv  *in, struct hsl  *out);
 
 void rgb_invert(struct rgb *);
 
@@ -86,6 +86,81 @@ int cmyk_valid(const struct cmyk *color)
     return 1;
 }
 
+void rgb2hsl(const struct rgb *in, struct hsl *out)
+{
+    float r = in->r / 255.f;
+    float g = in->g / 255.f;
+    float b = in->b / 255.f;
+
+    float cmax = _max(_max(r, g), b);
+    float cmin = _min(_min(r, g), b);
+
+    out->l = (cmax + cmin) / 2;
+
+    if (cmax == cmin)
+        out->h = out->s = 0;
+    else {
+        float d = cmax - cmin;
+
+        out->s = out->l > 0.5f ? d / (2 - cmax - cmin) : d / (cmax + cmin);
+
+        if (cmax == r)
+            out->h = (g - b) / d + (g < b ? 6 : 0);
+        else if (cmax == g)
+            out->h = (b - r) / d + 2;
+        else if (cmax == b)
+            out->h = (r - g) / d + 4;
+        out->h *= 60;
+    }
+}
+
+void rgb2hsv(const struct rgb *in, struct hsv *out)
+{
+    float r = in->r / 255.f;
+    float g = in->g / 255.f;
+    float b = in->b / 255.f;
+
+    float cmax = _max(_max(r, g), b);
+    float cmin = _min(_min(r, g), b);
+    float d = cmax - cmin;
+
+    out->v = cmax;
+
+    if (d == 0)
+        out->h = 0;
+    else {
+        if (cmax == r)
+            out->h = (g - b) / d + (g < b ? 6 : 0);
+        else if (cmax == g)
+            out->h = (b - r) / d + 2;
+        else if (cmax == b)
+            out->h = (r - g) / d + 4;
+        out->h *= 60;
+    }
+
+    if (cmax == 0)
+        out->s = 0;
+    else
+        out->s = d / out->v;
+}
+
+void rgb2cmyk(const struct rgb *in, struct cmyk *out)
+{
+    float r = in->r / 255.f;
+    float g = in->g / 255.f;
+    float b = in->b / 255.f;
+
+    out->k = 1 - _max(_max(r, g), b);
+    out->c = (1 - r - out->k) / (1 - out->k);
+    out->m = (1 - g - out->k) / (1 - out->k);
+    out->y = (1 - b - out->k) / (1 - out->k);
+}
+
+void rgb2hex(const struct rgb *in, int *out)
+{
+    *out = in->r << 16 | in->g << 8 | in->b;
+}
+
 #define _trunc(x) ((float) (int) (x))
 #define _abs(x) ((x) >= 0 ? (x) : -(x))
 #define _fmod(x, y) ((x) - _trunc((x) / (y)) * (y))
@@ -98,10 +173,8 @@ do {                     \
     b = _b;              \
 } while (0)
 
-struct rgb hsl2rgb(const struct hsl *in)
+void hsl2rgb(const struct hsl *in, struct rgb *out)
 {
-    struct rgb out;
-
     float h = in->h/60, s = in->s, l = in->l;
 
     float c = (1 - _abs(2*l - 1)) * s;
@@ -123,17 +196,13 @@ struct rgb hsl2rgb(const struct hsl *in)
     else if (h >= 5 && h < 6)
         _RGB(c, 0, x);
 
-    out.r = (unsigned char) ((r + m) * 255);
-    out.g = (unsigned char) ((g + m) * 255);
-    out.b = (unsigned char) ((b + m) * 255);
-
-    return out;
+    out->r = (unsigned char) ((r + m) * 255);
+    out->g = (unsigned char) ((g + m) * 255);
+    out->b = (unsigned char) ((b + m) * 255);
 }
 
-struct rgb hsv2rgb(const struct hsv *in)
+void hsv2rgb(const struct hsv *in, struct rgb *out)
 {
-    struct rgb out;
-
     float h = in->h/60, s = in->s, v = in->v;
 
     float c = v * s;
@@ -155,11 +224,9 @@ struct rgb hsv2rgb(const struct hsv *in)
     else if (h >= 5 && h < 6)
         _RGB(c, 0, x);
 
-    out.r = (unsigned char)((r + m) * 255);
-    out.g = (unsigned char)((g + m) * 255);
-    out.b = (unsigned char)((b + m) * 255);
-
-    return out;
+    out->r = (unsigned char) ((r + m) * 255);
+    out->g = (unsigned char) ((g + m) * 255);
+    out->b = (unsigned char) ((b + m) * 255);
 }
 
 #undef _RGB
@@ -167,136 +234,38 @@ struct rgb hsv2rgb(const struct hsv *in)
 #undef _abs
 #undef _trunc
 
-struct rgb hex2rgb(int code)
+void cmyk2rgb(const struct cmyk *in, struct rgb *out)
 {
-    struct rgb out = { code >> 16, code >> 8, code };
-    return out;
+    out->r = (unsigned char) (255 * (1 - in->c) * (1 - in->k));
+    out->g = (unsigned char) (255 * (1 - in->m) * (1 - in->k));
+    out->b = (unsigned char) (255 * (1 - in->y) * (1 - in->k));
 }
 
-struct hsl rgb2hsl(const struct rgb *in)
+void hex2rgb(const int *in, struct rgb *out)
 {
-    struct hsl out;
-
-    float r = in->r / 255.f;
-    float g = in->g / 255.f;
-    float b = in->b / 255.f;
-
-    float cmax = _max(_max(r, g), b);
-    float cmin = _min(_min(r, g), b);
-
-    out.l = (cmax + cmin) / 2;
-
-    if (cmax == cmin)
-        out.h = out.s = 0;
-    else {
-        float d = cmax - cmin;
-
-        out.s = out.l > 0.5f ? d / (2 - cmax - cmin) : d / (cmax + cmin);
-
-        if (cmax == r)
-            out.h = (g - b) / d + (g < b ? 6 : 0);
-        else if (cmax == g)
-            out.h = (b - r) / d + 2;
-        else if (cmax == b)
-            out.h = (r - g) / d + 4;
-        out.h *= 60;
-    }
-
-    return out;
+    out->r = (unsigned char) (*in >> 16);
+    out->g = (unsigned char) (*in >> 8);
+    out->b = (unsigned char) (*in);
 }
 
-struct hsv rgb2hsv(const struct rgb *in)
+void hsl2hsv(const struct hsl *in, struct hsv *out)
 {
-    struct hsv out;
-
-    float r = in->r / 255.f;
-    float g = in->g / 255.f;
-    float b = in->b / 255.f;
-
-    float cmax = _max(_max(r, g), b);
-    float cmin = _min(_min(r, g), b);
-    float d = cmax - cmin;
-
-    out.v = cmax;
-
-    if (d == 0)
-        out.h = 0;
-    else {
-        if (cmax == r)
-            out.h = (g - b) / d + (g < b ? 6 : 0);
-        else if (cmax == g)
-            out.h = (b - r) / d + 2;
-        else if (cmax == b)
-            out.h = (r - g) / d + 4;
-        out.h *= 60;
-    }
-
-    if (cmax == 0)
-        out.s = 0;
+    out->h = in->h;
+    out->v = in->l + in->s * _min(in->l, 1 - in->l);
+    if (out->v == 0)
+        out->s = 0;
     else
-        out.s = d / out.v;
-
-    return out;
+        out->s = 2 * (1 - in->l / out->v);
 }
 
-struct hsl hsv2hsl(const struct hsv *in)
+void hsv2hsl(const struct hsv *in, struct hsl *out)
 {
-    struct hsl out;
-
-    out.h = in->h;
-    out.l = in->v * (1 - in->s/2);
-    if (out.l == 0 || out.l == 1)
-        out.s = 0;
+    out->h = in->h;
+    out->l = in->v * (1 - in->s / 2);
+    if (out->l == 0 || out->l == 1)
+        out->s = 0;
     else
-        out.s = (in->v - out.l) / _min(out.l, 1 - out.l);
-
-    return out;
-}
-
-struct hsv hsl2hsv(const struct hsl *in)
-{
-    struct hsv out;
-
-    out.h = in->h;
-    out.v = in->l + in->s * _min(in->l, 1 - in->l);
-    if (out.v == 0)
-        out.s = 0;
-    else
-        out.s = 2 * (1 - in->l/out.v);
-
-    return out;
-}
-
-int rgb2hex(const struct rgb *in)
-{
-    return in->r << 16 | in->g << 8 | in->b;
-}
-
-struct cmyk rgb2cmyk(const struct rgb *in)
-{
-    struct cmyk out;
-
-    float r = in->r / 255.f;
-    float g = in->g / 255.f;
-    float b = in->b / 255.f;
-
-    out.k = 1 - _max(_max(r, g), b);
-    out.c = (1 - r - out.k) / (1 - out.k);
-    out.m = (1 - g - out.k) / (1 - out.k);
-    out.y = (1 - b - out.k) / (1 - out.k);
-
-    return out;
-}
-
-struct rgb cmyk2rgb(const struct cmyk *in)
-{
-    struct rgb out;
-
-    out.r = 255 * (1 - in->c) * (1 - in->k);
-    out.g = 255 * (1 - in->m) * (1 - in->k);
-    out.b = 255 * (1 - in->y) * (1 - in->k);
-
-    return out;
+        out->s = (in->v - out->l) / _min(out->l, 1 - out->l);
 }
 
 void rgb_invert(struct rgb *color)
