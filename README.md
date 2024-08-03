@@ -28,12 +28,21 @@ typedef struct rgb {
     unsigned char b;
 } rgb_t;
 
+typedef struct cmyk {
+    float c;
+    float m;
+    float y;
+    float k;
+} cmyk_t;
+
 struct rgb rgb(unsigned char r, unsigned char g, unsigned char b);
 struct hsl hsl(float hue, float saturation, float lightness);
 struct hsv hsv(float hue, float saturation, float value);
+struct cmyk cmyk(float c, float m, float y, float k);
 
 int hsl_valid(const struct hsl *);
 int hsv_valid(const struct hsv *);
+int cmyk_valid(const struct cmyk *);
 
 struct rgb hsl2rgb(const struct hsl *);
 struct rgb hex2rgb(int code);
@@ -43,6 +52,8 @@ struct rgb hsv2rgb(const struct hsv *);
 struct hsl hsv2hsl(const struct hsv *);
 struct hsv hsl2hsv(const struct hsl *);
 int rgb2hex(const struct rgb *);
+struct cmyk rgb2cmyk(const struct rgb *);
+struct rgb cmyk2rgb(const struct cmyk *);
 
 void rgb_invert(struct rgb *);
 ```

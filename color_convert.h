@@ -29,9 +29,11 @@ typedef struct cmyk {
 struct rgb rgb(unsigned char r, unsigned char g, unsigned char b);
 struct hsl hsl(float hue, float saturation, float lightness);
 struct hsv hsv(float hue, float saturation, float value);
+struct cmyk cmyk(float c, float m, float y, float k);
 
 int hsl_valid(const struct hsl *);
 int hsv_valid(const struct hsv *);
+int cmyk_valid(const struct cmyk *);
 
 struct rgb hsl2rgb(const struct hsl *);
 struct rgb hex2rgb(int code);
@@ -69,6 +71,12 @@ struct hsv hsv(float h, float s, float v)
     return color;
 }
 
+struct cmyk cmyk(float c, float m, float y, float k)
+{
+    struct cmyk color = { c, m, y, k };
+    return color;
+}
+
 int hsl_valid(const struct hsl *color)
 {
     if (color->h < 0 || color->h >= 360)
@@ -88,6 +96,20 @@ int hsv_valid(const struct hsv *color)
     if (color->s < 0 || color->s > 1)
         return 0;
     if (color->v < 0 || color->v > 1)
+        return 0;
+
+    return 1;
+}
+
+int cmyk_valid(const struct cmyk *color)
+{
+    if (color->c < 0 || color->c > 1)
+        return 0;
+    if (color->m < 0 || color->m > 1)
+        return 0;
+    if (color->y < 0 || color->y > 1)
+        return 0;
+    if (color->k < 0 || color->k > 1)
         return 0;
 
     return 1;
