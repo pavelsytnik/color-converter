@@ -26,11 +26,6 @@ typedef struct cmyk {
     float k;
 } cmyk_t;
 
-struct rgb rgb(unsigned char r, unsigned char g, unsigned char b);
-struct hsl hsl(float hue, float saturation, float lightness);
-struct hsv hsv(float hue, float saturation, float value);
-struct cmyk cmyk(float c, float m, float y, float k);
-
 int hsl_valid(const struct hsl *);
 int hsv_valid(const struct hsv *);
 int cmyk_valid(const struct cmyk *);
@@ -52,30 +47,6 @@ void rgb_invert(struct rgb *);
 
 #define _max(x, y) ((x) > (y) ? (x) : (y))
 #define _min(x, y) ((x) < (y) ? (x) : (y))
-
-struct rgb rgb(unsigned char r, unsigned char g, unsigned char b)
-{
-    struct rgb color = { r, g, b };
-    return color;
-}
-
-struct hsl hsl(float h, float s, float l)
-{
-    struct hsl color = { h, s, l };
-    return color;
-}
-
-struct hsv hsv(float h, float s, float v)
-{
-    struct hsv color = { h, s, v };
-    return color;
-}
-
-struct cmyk cmyk(float c, float m, float y, float k)
-{
-    struct cmyk color = { c, m, y, k };
-    return color;
-}
 
 int hsl_valid(const struct hsl *color)
 {

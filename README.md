@@ -28,21 +28,8 @@ typedef struct rgb {
     unsigned char b;
 } rgb_t;
 
-typedef struct cmyk {
-    float c;
-    float m;
-    float y;
-    float k;
-} cmyk_t;
-
-struct rgb rgb(unsigned char r, unsigned char g, unsigned char b);
-struct hsl hsl(float hue, float saturation, float lightness);
-struct hsv hsv(float hue, float saturation, float value);
-struct cmyk cmyk(float c, float m, float y, float k);
-
 int hsl_valid(const struct hsl *);
 int hsv_valid(const struct hsv *);
-int cmyk_valid(const struct cmyk *);
 
 struct rgb hsl2rgb(const struct hsl *);
 struct rgb hex2rgb(int code);
@@ -52,8 +39,6 @@ struct rgb hsv2rgb(const struct hsv *);
 struct hsl hsv2hsl(const struct hsv *);
 struct hsv hsl2hsv(const struct hsl *);
 int rgb2hex(const struct rgb *);
-struct cmyk rgb2cmyk(const struct rgb *);
-struct rgb cmyk2rgb(const struct cmyk *);
 
 void rgb_invert(struct rgb *);
 ```
@@ -68,10 +53,10 @@ void rgb_invert(struct rgb *);
 
 int main(void)
 {
-    struct rgb rgb_color = rgb(127, 63, 31);
+    struct rgb rgb_color = { 127, 63, 31 };
 
     /*  h[0;360)    s[0;1)    l[0;1)  */
-    struct hsl hsl_color = hsl(180, 1.00f, .50f);
+    struct hsl hsl_color = { 180, 1.00f, .50f };
 
     printf("rgb(%d, %d, %d)\n", rgb_color.r, rgb_color.g, rgb_color.b);
     printf("hsl(%f degrees, %f %%, %f %%)\n",
@@ -92,5 +77,5 @@ int main(void)
 - [x] RGB
 - [x] HSL
 - [x] HSV
-- [x] CMYK
+- [ ] CMYK
 - [ ] Corresponding types with an alpha channel
