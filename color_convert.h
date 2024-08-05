@@ -48,8 +48,11 @@ void  hex2rgb (const        int  *in, struct rgb  *out);
 void  hsl2hsv (const struct hsl  *in, struct hsv  *out);
 void  hsv2hsl (const struct hsv  *in, struct hsl  *out);
 
-void rgb_invert(struct rgb *);
-void rgb_blend(struct rgb *dst, const struct rgba *src);
+#define rgb_invert(color) rgb_inverted(color, color)
+#define rgb_blend(dst, src) rgb_blended(dst, src, dst)
+
+void rgb_inverted(const struct rgb *in, struct rgb *out);
+void rgb_blended(const struct rgb *dst, const struct rgba *src, struct rgb *res);
 
 #ifdef COLOR_CONVERT_IMPLEMENTATION
 
@@ -276,20 +279,20 @@ void hsv2hsl(const struct hsv *in, struct hsl *out)
         out->s = (in->v - out->l) / _min(out->l, 1 - out->l);
 }
 
-void rgb_invert(struct rgb *color)
+void rgb_inverted(const struct rgb *in, struct rgb *out)
 {
-    color->r = ~color->r;
-    color->g = ~color->g;
-    color->b = ~color->b;
+    out->r = ~in->r;
+    out->g = ~in->g;
+    out->b = ~in->b;
 }
 
-void rgb_blend(struct rgb *dst, const struct rgba *src)
+void rgb_blended(const struct rgb *dst, const struct rgba *src, struct rgb *res)
 {
     float a = src->a / 255.f;
 
-    dst->r = dst->r * (1 - a) + src->r * a;
-    dst->g = dst->g * (1 - a) + src->g * a;
-    dst->b = dst->b * (1 - a) + src->b * a;
+    res->r = dst->r * (1 - a) + src->r * a;
+    res->g = dst->g * (1 - a) + src->g * a;
+    res->b = dst->b * (1 - a) + src->b * a;
 }
 
 #undef _min
