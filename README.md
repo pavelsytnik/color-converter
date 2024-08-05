@@ -28,6 +28,13 @@ typedef struct rgb {
     unsigned char b;
 } rgb_t;
 
+typedef struct rgba {
+    unsigned char r;
+    unsigned char g;
+    unsigned char b;
+    unsigned char a;
+} rgba_t;
+
 typedef struct cmyk {
     float c;
     float m;
@@ -38,6 +45,7 @@ typedef struct cmyk {
 /*             COLOR RANGES
  *
  * RGB  - R[0; 255]  G[0; 255]  B[0; 255]
+ * RGBA - R[0; 255]  G[0; 255]  B[0; 255]  A[0; 255]
  * HSL  - H[0; 360)  S[0; 1]    L[0; 1]
  * HSV  - H[0; 360)  S[0; 1]    V[0; 1]
  * CMYK - C[0; 1]    M[0; 1]    Y[0; 1]    K[0; 1]
@@ -60,6 +68,7 @@ void  hsl2hsv (const struct hsl  *in, struct hsv  *out);
 void  hsv2hsl (const struct hsv  *in, struct hsl  *out);
 
 void rgb_invert(struct rgb *);
+void rgb_blend(struct rgb *dst, const struct rgba *src);
 ```
 
 ## Usage example

@@ -19,6 +19,13 @@ typedef struct rgb {
     unsigned char b;
 } rgb_t;
 
+typedef struct rgba {
+    unsigned char r;
+    unsigned char g;
+    unsigned char b;
+    unsigned char a;
+} rgba_t;
+
 typedef struct cmyk {
     float c;
     float m;
@@ -42,6 +49,7 @@ void  hsl2hsv (const struct hsl  *in, struct hsv  *out);
 void  hsv2hsl (const struct hsv  *in, struct hsl  *out);
 
 void rgb_invert(struct rgb *);
+void rgb_blend(struct rgb *dst, const struct rgba *src);
 
 #ifdef COLOR_CONVERT_IMPLEMENTATION
 
@@ -273,6 +281,15 @@ void rgb_invert(struct rgb *color)
     color->r = ~color->r;
     color->g = ~color->g;
     color->b = ~color->b;
+}
+
+void rgb_blend(struct rgb *dst, const struct rgba *src)
+{
+    float a = src->a / 255.f;
+
+    dst->r = dst->r * (1 - a) + src->r * a;
+    dst->g = dst->g * (1 - a) + src->g * a;
+    dst->b = dst->b * (1 - a) + src->b * a;
 }
 
 #undef _min
