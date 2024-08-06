@@ -45,6 +45,7 @@ void  hsl2rgb (const struct hsl  *in, struct rgb  *out);
 void  hsv2rgb (const struct hsv  *in, struct rgb  *out);
 void cmyk2rgb (const struct cmyk *in, struct rgb  *out);
 void  hex2rgb (const        int  *in, struct rgb  *out);
+void  hex2web (const        int  *in,        int  *out);
 void  hsl2hsv (const struct hsl  *in, struct hsv  *out);
 void  hsv2hsl (const struct hsv  *in, struct hsl  *out);
 
@@ -257,6 +258,39 @@ void hex2rgb(const int *in, struct rgb *out)
     out->r = (unsigned char) (*in >> 16);
     out->g = (unsigned char) (*in >> 8);
     out->b = (unsigned char) (*in);
+}
+
+void hex2web(const int *in, int *out)
+{
+    unsigned char r = *in >> 16;
+    unsigned char g = *in >> 8;
+    unsigned char b = *in;
+
+    unsigned char *c = &r;
+
+start:
+    if (*c <= 0x19)
+        *c = 0x00;
+    else if (*c <= 0x4C)
+        *c = 0x33;
+    else if (*c <= 0x7F)
+        *c = 0x66;
+    else if (*c <= 0xB2)
+        *c = 0x99;
+    else if (*c <= 0xE5)
+        *c = 0xCC;
+    else
+        *c = 0xFF;
+
+    if (c == &r) {
+        c = &g;
+        goto start;
+    } else if (c == &g) {
+        c = &b;
+        goto start;
+    }
+
+    *out = r << 16 | g << 8 | b;
 }
 
 void hsl2hsv(const struct hsl *in, struct hsv *out)

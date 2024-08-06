@@ -64,6 +64,7 @@ void  hsl2rgb (const struct hsl  *in, struct rgb  *out);
 void  hsv2rgb (const struct hsv  *in, struct rgb  *out);
 void cmyk2rgb (const struct cmyk *in, struct rgb  *out);
 void  hex2rgb (const        int  *in, struct rgb  *out);
+void  hex2web (const        int  *in,        int  *out);
 void  hsl2hsv (const struct hsl  *in, struct hsv  *out);
 void  hsv2hsl (const struct hsv  *in, struct hsl  *out);
 
