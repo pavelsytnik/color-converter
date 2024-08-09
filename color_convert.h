@@ -45,7 +45,6 @@ void  hsl2rgb (const struct hsl  *in, struct rgb  *out);
 void  hsv2rgb (const struct hsv  *in, struct rgb  *out);
 void cmyk2rgb (const struct cmyk *in, struct rgb  *out);
 void  hex2rgb (const        int  *in, struct rgb  *out);
-void  hex2web (const        int  *in,        int  *out);
 void  hsl2hsv (const struct hsl  *in, struct hsv  *out);
 void  hsv2hsl (const struct hsv  *in, struct hsl  *out);
 
@@ -54,6 +53,7 @@ void  hsv2hsl (const struct hsv  *in, struct hsl  *out);
 
 void rgb_inverted(const struct rgb *in, struct rgb *out);
 void rgb_blended(const struct rgb *dst, const struct rgba *src, struct rgb *res);
+void hex_websafe(int *color);
 
 #ifdef COLOR_CONVERT_IMPLEMENTATION
 
@@ -260,37 +260,29 @@ void hex2rgb(const int *in, struct rgb *out)
     out->b = (unsigned char) (*in);
 }
 
-void hex2web(const int *in, int *out)
+static unsigned char _channel_websafe(unsigned char c)
 {
-    unsigned char r = *in >> 16;
-    unsigned char g = *in >> 8;
-    unsigned char b = *in;
-
-    unsigned char *c = &r;
-
-start:
-    if (*c <= 0x19)
-        *c = 0x00;
-    else if (*c <= 0x4C)
-        *c = 0x33;
-    else if (*c <= 0x7F)
-        *c = 0x66;
-    else if (*c <= 0xB2)
-        *c = 0x99;
-    else if (*c <= 0xE5)
-        *c = 0xCC;
+    if (c <= 0x19)
+        return 0x00;
+    else if (c <= 0x4C)
+        return 0x33;
+    else if (c <= 0x7F)
+        return 0x66;
+    else if (c <= 0xB2)
+        return 0x99;
+    else if (c <= 0xE5)
+        return 0xCC;
     else
-        *c = 0xFF;
+        return 0xFF;
+}
 
-    if (c == &r) {
-        c = &g;
-        goto start;
-    } else if (c == &g) {
-        c = &b;
-        goto start;
+void hex_websafe(int *color)
+{
+    int i;
+    for (i = 16; i >= 0; i -= 8) {
+        int mask = ~(0xFF << i);
+        *color = (*color & mask) | (_channel_websafe(*color >> i) << i);
     }
-
-    *out = r << 16 | g << 8 | b;
 }
 
 void hsl2hsv(const struct hsl *in, struct hsv *out)
