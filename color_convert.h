@@ -260,30 +260,25 @@ void hex2rgb(const int *in, struct rgb *out)
     out->b = (unsigned char) (*in);
 }
 
-static unsigned char _channel_websafe(unsigned char c)
-{
-    if (c <= 0x19)
-        return 0x00;
-    else if (c <= 0x4C)
-        return 0x33;
-    else if (c <= 0x7F)
-        return 0x66;
-    else if (c <= 0xB2)
-        return 0x99;
-    else if (c <= 0xE5)
-        return 0xCC;
-    else
-        return 0xFF;
-}
+#define _channel_websafe(c) \
+    ( (c) <= 0x19 ? 0x00    \
+    : (c) <= 0x4C ? 0x33    \
+    : (c) <= 0x7F ? 0x66    \
+    : (c) <= 0xB2 ? 0x99    \
+    : (c) <= 0xE5 ? 0xCC    \
+    :               0xFF    )
 
 void hex_websafe(int *color)
 {
-    int i;
-    for (i = 16; i >= 0; i -= 8) {
-        int mask = ~(0xFF << i);
-        *color = (*color & mask) | (_channel_websafe(*color >> i) << i);
+    int bits;
+    for (bits = 16; bits >= 0; bits -= 8) {
+        int mask = ~(0xFF << bits);
+        unsigned char channel = *color >> bits;
+        *color = (*color & mask) | (_channel_websafe(channel) << bits);
     }
 }
+
+#undef _channel_websafe
 
 void hsl2hsv(const struct hsl *in, struct hsv *out)
 {
