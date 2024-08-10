@@ -40,10 +40,12 @@ int cmyk_valid(const struct cmyk *);
 void  rgb2hsl (const struct rgb  *in, struct hsl  *out);
 void  rgb2hsv (const struct rgb  *in, struct hsv  *out);
 void  rgb2cmyk(const struct rgb  *in, struct cmyk *out);
+void  rgb2rgba(const struct rgb  *in, struct rgba *out);
 void  rgb2hex (const struct rgb  *in,        int  *out);
 void  hsl2rgb (const struct hsl  *in, struct rgb  *out);
 void  hsv2rgb (const struct hsv  *in, struct rgb  *out);
 void cmyk2rgb (const struct cmyk *in, struct rgb  *out);
+void rgba2rgb (const struct rgba *in, struct rgb  *out);
 void  hex2rgb (const        int  *in, struct rgb  *out);
 void  hsl2hsv (const struct hsl  *in, struct hsv  *out);
 void  hsv2hsl (const struct hsv  *in, struct hsl  *out);
@@ -168,6 +170,14 @@ void rgb2cmyk(const struct rgb *in, struct cmyk *out)
     out->y = (1 - b - out->k) / (1 - out->k);
 }
 
+void rgb2rgba(const struct rgb *in, struct rgba *out)
+{
+    out->r = in->r;
+    out->g = in->g;
+    out->b = in->b;
+    out->a = 0xFF;
+}
+
 void rgb2hex(const struct rgb *in, int *out)
 {
     *out = in->r << 16 | in->g << 8 | in->b;
@@ -251,6 +261,13 @@ void cmyk2rgb(const struct cmyk *in, struct rgb *out)
     out->r = (unsigned char) (255 * (1 - in->c) * (1 - in->k));
     out->g = (unsigned char) (255 * (1 - in->m) * (1 - in->k));
     out->b = (unsigned char) (255 * (1 - in->y) * (1 - in->k));
+}
+
+void rgba2rgb(const struct rgba *in, struct rgb *out)
+{
+    out->r = in->r;
+    out->g = in->g;
+    out->b = in->b;
 }
 
 void hex2rgb(const int *in, struct rgb *out)
