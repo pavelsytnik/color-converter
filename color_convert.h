@@ -1,3 +1,8 @@
+/************************************************************************
+ * Copyright (c) 2024 Pavel Sytník.                                     *
+ * Licensed under the MIT License. See LICENSE for license information. *
+ ************************************************************************/
+
 /**
  * @file color_convert.h
  * @brief A tiny header-only library for interacting with colors.
