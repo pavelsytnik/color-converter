@@ -1,57 +1,202 @@
+/**
+ * @file color_convert.h
+ * @brief A tiny header-only library for interacting with colors.
+ */
+
 #ifndef COLOR_CONVERT_H
 #define COLOR_CONVERT_H
 
+/**
+ * HSL color format.
+ */
 typedef struct hsl {
-    float h;
-    float s;
-    float l;
+    float h; /**< hue         [0; 360) */
+    float s; /**< saturation  [0; 1]   */
+    float l; /**< lightness   [0; 1]   */
 } hsl_t;
 
+/**
+ * HSV color format.
+ */
 typedef struct hsv {
-    float h;
-    float s;
-    float v;
+    float h; /**< hue         [0; 360) */
+    float s; /**< saturation  [0; 1]   */
+    float v; /**< value       [0; 1]   */
 } hsv_t;
 
+/**
+ * RGB color format.
+ */
 typedef struct rgb {
-    unsigned char r;
-    unsigned char g;
-    unsigned char b;
+    unsigned char r; /**< red    [0; 255] */
+    unsigned char g; /**< green  [0; 255] */
+    unsigned char b; /**< blue   [0; 255] */
 } rgb_t;
 
+/**
+ * RGBA color format.
+ */
 typedef struct rgba {
-    unsigned char r;
-    unsigned char g;
-    unsigned char b;
-    unsigned char a;
+    unsigned char r; /**< red    [0; 255] */
+    unsigned char g; /**< green  [0; 255] */
+    unsigned char b; /**< blue   [0; 255] */
+    unsigned char a; /**< alpha  [0; 255] */
 } rgba_t;
 
+/**
+ * CMYK color format.
+ */
 typedef struct cmyk {
-    float c;
-    float m;
-    float y;
-    float k;
+    float c; /**< cyan    [0; 1] */
+    float m; /**< magenta [0; 1] */
+    float y; /**< yellow  [0; 1] */
+    float k; /**< black   [0; 1] */
 } cmyk_t;
 
-int  hsl_valid(const struct hsl  *);
-int  hsv_valid(const struct hsv  *);
-int cmyk_valid(const struct cmyk *);
+/**
+ * @brief Check if an HSL structure has correct data.
+ *
+ * @param color    a pointer to an HSL color
+ * @return non-zero if valid, zero otherwise
+ */
+int hsl_valid(const struct hsl *color);
 
-void  rgb2hsl (const struct rgb  *in, struct hsl  *out);
-void  rgb2hsv (const struct rgb  *in, struct hsv  *out);
-void  rgb2cmyk(const struct rgb  *in, struct cmyk *out);
-void  rgb2rgba(const struct rgb  *in, struct rgba *out);
-void  rgb2hex (const struct rgb  *in,        int  *out);
-void  hsl2rgb (const struct hsl  *in, struct rgb  *out);
-void  hsv2rgb (const struct hsv  *in, struct rgb  *out);
-void cmyk2rgb (const struct cmyk *in, struct rgb  *out);
-void rgba2rgb (const struct rgba *in, struct rgb  *out);
-void  hex2rgb (const        int  *in, struct rgb  *out);
-void  hsl2hsv (const struct hsl  *in, struct hsv  *out);
-void  hsv2hsl (const struct hsv  *in, struct hsl  *out);
+/**
+ * @brief Check if an HSV structure has correct data.
+ *
+ * @param color a pointer to an HSV color
+ * @return non-zero if valid, zero otherwise
+ */
+int hsv_valid(const struct hsv *color);
 
+/**
+ * @brief Check if a CMYK structure has correct data.
+ *
+ * @param color a pointer to a CMYK color
+ * @return non-zero if valid, zero otherwise
+ */
+int cmyk_valid(const struct cmyk *color);
+
+/**
+ * @brief Convert an RGB color to an HSL one.
+ *
+ * @param[in]  in  a pointer to an RGB color
+ * @param[out] out a pointer to an HSL color
+ */
+void rgb2hsl(const struct rgb *in, struct hsl *out);
+
+/**
+ * @brief Convert an RGB color to an HSV one.
+ *
+ * @param[in]  in  a pointer to an RGB color
+ * @param[out] out a pointer to an HSV color
+ */
+void rgb2hsv(const struct rgb *in, struct hsv *out);
+
+/**
+ * @brief Convert an RGB color to a CMYK one.
+ *
+ * @param[in]  in  a pointer to an RGB color
+ * @param[out] out a pointer to a CMYK color
+ */
+void rgb2cmyk(const struct rgb *in, struct cmyk *out);
+
+/**
+ * @brief Convert an RGB color to an RGBA one.
+ *
+ * @param[in]  in  a pointer to an RGB color
+ * @param[out] out a pointer to an RGBA color
+ */
+void rgb2rgba(const struct rgb *in, struct rgba *out);
+
+/**
+ * @brief Convert an RGB color to a HEX one.
+ *
+ * @param[in]  in  a pointer to an RGB color
+ * @param[out] out a pointer to a HEX color
+ */
+void rgb2hex(const struct rgb *in, int *out);
+
+/**
+ * @brief Convert an HSL color to an RGB one.
+ *
+ * @param[in]  in  a pointer to an HSL color
+ * @param[out] out a pointer to an RGB color
+ */
+void hsl2rgb(const struct hsl *in, struct rgb *out);
+
+/**
+ * @brief Convert an HSV color to an RGB one.
+ *
+ * @param[in]  in  a pointer to an HSV color
+ * @param[out] out a pointer to an RGB color
+ */
+void hsv2rgb(const struct hsv *in, struct rgb *out);
+
+/**
+ * @brief Convert a CMYK color to an RGB one.
+ *
+ * @param[in]  in  a pointer to a CMYK color
+ * @param[out] out a pointer to an RGB color
+ */
+void cmyk2rgb(const struct cmyk *in, struct rgb *out);
+
+/**
+ * @brief Convert an RGBA color to an RGB one.
+ *
+ * @param[in]  in  a pointer to an RGBA color
+ * @param[out] out a pointer to an RGB color
+ */
+void rgba2rgb(const struct rgba *in, struct rgb *out);
+
+/**
+ * @brief Convert a HEX color to an RGB one.
+ *
+ * @param[in]  in  a pointer to a HEX color
+ * @param[out] out a pointer to an RGB color
+ */
+void hex2rgb(const int *in, struct rgb *out);
+
+/**
+ * @brief Convert an HSL color to an HSV one.
+ *
+ * @param[in]  in  a pointer to an HSL color
+ * @param[out] out a pointer to an HSV color
+ */
+void hsl2hsv(const struct hsl *in, struct hsv *out);
+
+/**
+ * @brief Convert an HSV color to an HSL one.
+ *
+ * @param[in]  in  a pointer to an HSV color
+ * @param[out] out a pointer to an HSL color
+ */
+void hsv2hsl(const struct hsv *in, struct hsl *out);
+
+/**
+ * @brief Invert an RGB color.
+ *
+ * @param[in,out] color a pointer to an RGB color
+ */
 void rgb_invert(struct rgb *color);
+
+/**
+ * @brief Blend a solid RGB color with an RGBA color.
+ * 
+ * The result of the blend is stored back in `dst`.
+ * The alpha channel of `src` determines the blend ratio.
+ *
+ * @param[in,out] dst a pointer to the background for the second parameter
+ * @param[in]     src a pointer to an RGBA color which will be blended with
+ *                    the first
+ */
 void rgb_blend(struct rgb *dst, const struct rgba *src);
+
+/**
+ * @brief Make a hexadecimal color web-safe.
+ *
+ * @param[in,out] color a pointer to a hexadecimal color
+ */
 void hex_websafe(int *color);
 
 #ifdef COLOR_CONVERT_IMPLEMENTATION
