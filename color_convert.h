@@ -214,8 +214,8 @@ void hex_websafe(int *color);
 
 #ifdef COLOR_CONVERT_IMPLEMENTATION
 
-#define _max(x, y) ((x) > (y) ? (x) : (y))
-#define _min(x, y) ((x) < (y) ? (x) : (y))
+#define max_(x, y) ((x) > (y) ? (x) : (y))
+#define min_(x, y) ((x) < (y) ? (x) : (y))
 
 int hsl_valid(const struct hsl *color)
 {
@@ -261,8 +261,8 @@ void rgb2hsl(const struct rgb *in, struct hsl *out)
     float g = in->g / 255.f;
     float b = in->b / 255.f;
 
-    float cmax = _max(_max(r, g), b);
-    float cmin = _min(_min(r, g), b);
+    float cmax = max_(max_(r, g), b);
+    float cmin = min_(min_(r, g), b);
 
     out->l = (cmax + cmin) / 2;
 
@@ -289,8 +289,8 @@ void rgb2hsv(const struct rgb *in, struct hsv *out)
     float g = in->g / 255.f;
     float b = in->b / 255.f;
 
-    float cmax = _max(_max(r, g), b);
-    float cmin = _min(_min(r, g), b);
+    float cmax = max_(max_(r, g), b);
+    float cmin = min_(min_(r, g), b);
     float d = cmax - cmin;
 
     out->v = cmax;
@@ -319,7 +319,7 @@ void rgb2cmyk(const struct rgb *in, struct cmyk *out)
     float g = in->g / 255.f;
     float b = in->b / 255.f;
 
-    out->k = 1 - _max(_max(r, g), b);
+    out->k = 1 - max_(max_(r, g), b);
     out->c = (1 - r - out->k) / (1 - out->k);
     out->m = (1 - g - out->k) / (1 - out->k);
     out->y = (1 - b - out->k) / (1 - out->k);
@@ -338,40 +338,40 @@ void rgb2hex(const struct rgb *in, int *out)
     *out = in->r << 16 | in->g << 8 | in->b;
 }
 
-#define _trunc(x) ((float) (int) (x))
-#define _abs(x) ((x) >= 0 ? (x) : -(x))
-#define _fmod(x, y) ((x) - _trunc((x) / (y)) * (y))
+#define trunc_(x) ((float) (int) (x))
+#define abs_(x) ((x) >= 0 ? (x) : -(x))
+#define fmod_(x, y) ((x) - trunc_((x) / (y)) * (y))
 
 /* Set (r,g,b) defined in hsl2rgb() */
-#define _RGB(_r, _g, _b) \
+#define RGB_(r_, g_, b_) \
 do {                     \
-    r = _r;              \
-    g = _g;              \
-    b = _b;              \
+    r = r_;              \
+    g = g_;              \
+    b = b_;              \
 } while (0)
 
 void hsl2rgb(const struct hsl *in, struct rgb *out)
 {
     float h = in->h/60, s = in->s, l = in->l;
 
-    float c = (1 - _abs(2*l - 1)) * s;
-    float x = c * (1 - _abs(_fmod(h, 2) - 1));
+    float c = (1 - abs_(2*l - 1)) * s;
+    float x = c * (1 - abs_(fmod_(h, 2) - 1));
     float m = l - c/2;
 
     float r, g, b;
 
     if (h >= 0 && h < 1)
-        _RGB(c, x, 0);
+        RGB_(c, x, 0);
     else if (h >= 1 && h < 2)
-        _RGB(x, c, 0);
+        RGB_(x, c, 0);
     else if (h >= 2 && h < 3)
-        _RGB(0, c, x);
+        RGB_(0, c, x);
     else if (h >= 3 && h < 4)
-        _RGB(0, x, c);
+        RGB_(0, x, c);
     else if (h >= 4 && h < 5)
-        _RGB(x, 0, c);
+        RGB_(x, 0, c);
     else if (h >= 5 && h < 6)
-        _RGB(c, 0, x);
+        RGB_(c, 0, x);
 
     out->r = (unsigned char) ((r + m) * 255);
     out->g = (unsigned char) ((g + m) * 255);
@@ -383,33 +383,33 @@ void hsv2rgb(const struct hsv *in, struct rgb *out)
     float h = in->h/60, s = in->s, v = in->v;
 
     float c = v * s;
-    float x = c * (1 - _abs(_fmod(h, 2) - 1));
+    float x = c * (1 - abs_(fmod_(h, 2) - 1));
     float m = v - c;
 
     float r, g, b;
 
     if (h >= 0 && h < 1)
-        _RGB(c, x, 0);
+        RGB_(c, x, 0);
     else if (h >= 1 && h < 2)
-        _RGB(x, c, 0);
+        RGB_(x, c, 0);
     else if (h >= 2 && h < 3)
-        _RGB(0, c, x);
+        RGB_(0, c, x);
     else if (h >= 3 && h < 4)
-        _RGB(0, x, c);
+        RGB_(0, x, c);
     else if (h >= 4 && h < 5)
-        _RGB(x, 0, c);
+        RGB_(x, 0, c);
     else if (h >= 5 && h < 6)
-        _RGB(c, 0, x);
+        RGB_(c, 0, x);
 
     out->r = (unsigned char) ((r + m) * 255);
     out->g = (unsigned char) ((g + m) * 255);
     out->b = (unsigned char) ((b + m) * 255);
 }
 
-#undef _RGB
-#undef _fmod
-#undef _abs
-#undef _trunc
+#undef RGB_
+#undef fmod_
+#undef abs_
+#undef trunc_
 
 void cmyk2rgb(const struct cmyk *in, struct rgb *out)
 {
@@ -432,7 +432,7 @@ void hex2rgb(const int *in, struct rgb *out)
     out->b = (unsigned char) (*in);
 }
 
-#define _channel_websafe(c) \
+#define channel_websafe_(c) \
     ( (c) <= 0x19 ? 0x00    \
     : (c) <= 0x4C ? 0x33    \
     : (c) <= 0x7F ? 0x66    \
@@ -446,16 +446,16 @@ void hex_websafe(int *color)
     for (bits = 16; bits >= 0; bits -= 8) {
         int mask = ~(0xFF << bits);
         unsigned char channel = *color >> bits;
-        *color = (*color & mask) | (_channel_websafe(channel) << bits);
+        *color = (*color & mask) | (channel_websafe_(channel) << bits);
     }
 }
 
-#undef _channel_websafe
+#undef channel_websafe_
 
 void hsl2hsv(const struct hsl *in, struct hsv *out)
 {
     out->h = in->h;
-    out->v = in->l + in->s * _min(in->l, 1 - in->l);
+    out->v = in->l + in->s * min_(in->l, 1 - in->l);
     if (out->v == 0)
         out->s = 0;
     else
@@ -469,7 +469,7 @@ void hsv2hsl(const struct hsv *in, struct hsl *out)
     if (out->l == 0 || out->l == 1)
         out->s = 0;
     else
-        out->s = (in->v - out->l) / _min(out->l, 1 - out->l);
+        out->s = (in->v - out->l) / min_(out->l, 1 - out->l);
 }
 
 void rgb_invert(struct rgb *color)
@@ -488,8 +488,8 @@ void rgb_blend(struct rgb *dst, const struct rgba *src)
     dst->b = dst->b * (1 - a) + src->b * a;
 }
 
-#undef _min
-#undef _max
+#undef min_
+#undef max_
 
 #endif /* COLOR_CONVERT_IMPLEMENTATION */
 #endif /* COLOR_CONVERT_H */
