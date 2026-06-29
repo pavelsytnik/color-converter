@@ -1,7 +1,7 @@
-/************************************************************************
- * Copyright (c) 2024 Pavel Sytník.                                     *
- * Licensed under the MIT License. See LICENSE for license information. *
- ************************************************************************/
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ * Copyright (c) 2024-2026 Pavlo Sytnyk.                                 *
+ * Licensed under the MIT License. See LICENSE for license information.  *
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
 /**
  * @file color_convert.h
