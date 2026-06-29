@@ -11,6 +11,10 @@
 #ifndef COLOR_CONVERT_H
 #define COLOR_CONVERT_H
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 /**
  * HSL color format.
  */
@@ -203,6 +207,10 @@ void rgb_blend(struct rgb *dst, const struct rgba *src);
  * @param[in,out] color a pointer to a hexadecimal color
  */
 void hex_websafe(int *color);
+
+#ifdef __cplusplus
+}
+#endif
 
 #ifdef COLOR_CONVERT_IMPLEMENTATION
 
