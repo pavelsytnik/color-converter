@@ -191,7 +191,7 @@ void rgb_invert(struct rgb *color);
 
 /**
  * @brief Blend a solid RGB color with an RGBA color.
- * 
+ *
  * The result of the blend is stored back in `dst`.
  * The alpha channel of `src` determines the blend ratio.
  *
