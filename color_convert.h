@@ -204,6 +204,8 @@ void rgb_blend(struct rgb *dst, const struct rgba *src);
 /**
  * @brief Make a hexadecimal color web-safe.
  *
+ * @deprecated This function will be deleted in version 2.0.
+ *
  * @param[in,out] color a pointer to a hexadecimal color
  */
 void hex_websafe(int *color);
