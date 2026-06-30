@@ -342,12 +342,11 @@ void rgb2hex(const struct rgb *in, int *out)
 #define abs_(x) ((x) >= 0 ? (x) : -(x))
 #define fmod_(x, y) ((x) - trunc_((x) / (y)) * (y))
 
-/* Set (r,g,b) defined in hsl2rgb() */
-#define RGB_(r_, g_, b_) \
-do {                     \
-    r = r_;              \
-    g = g_;              \
-    b = b_;              \
+#define rgb_set_(rgb, r_, g_, b_) \
+do {                              \
+    (rgb)->r = (r_);              \
+    (rgb)->g = (g_);              \
+    (rgb)->b = (b_);              \
 } while (0)
 
 void hsl2rgb(const struct hsl *in, struct rgb *out)
@@ -358,24 +357,24 @@ void hsl2rgb(const struct hsl *in, struct rgb *out)
     float x = c * (1 - abs_(fmod_(h, 2) - 1));
     float m = l - c/2;
 
-    float r, g, b;
+    struct rgb rgb;
 
     if (h >= 0 && h < 1)
-        RGB_(c, x, 0);
+        rgb_set_(&rgb, c, x, 0);
     else if (h >= 1 && h < 2)
-        RGB_(x, c, 0);
+        rgb_set_(&rgb, x, c, 0);
     else if (h >= 2 && h < 3)
-        RGB_(0, c, x);
+        rgb_set_(&rgb, 0, c, x);
     else if (h >= 3 && h < 4)
-        RGB_(0, x, c);
+        rgb_set_(&rgb, 0, x, c);
     else if (h >= 4 && h < 5)
-        RGB_(x, 0, c);
+        rgb_set_(&rgb, x, 0, c);
     else if (h >= 5 && h < 6)
-        RGB_(c, 0, x);
+        rgb_set_(&rgb, c, 0, x);
 
-    out->r = (unsigned char) ((r + m) * 255);
-    out->g = (unsigned char) ((g + m) * 255);
-    out->b = (unsigned char) ((b + m) * 255);
+    out->r = (unsigned char) ((rgb.r + m) * 255);
+    out->g = (unsigned char) ((rgb.g + m) * 255);
+    out->b = (unsigned char) ((rgb.b + m) * 255);
 }
 
 void hsv2rgb(const struct hsv *in, struct rgb *out)
@@ -386,27 +385,27 @@ void hsv2rgb(const struct hsv *in, struct rgb *out)
     float x = c * (1 - abs_(fmod_(h, 2) - 1));
     float m = v - c;
 
-    float r, g, b;
+    struct rgb rgb;
 
     if (h >= 0 && h < 1)
-        RGB_(c, x, 0);
+        rgb_set_(&rgb, c, x, 0);
     else if (h >= 1 && h < 2)
-        RGB_(x, c, 0);
+        rgb_set_(&rgb, x, c, 0);
     else if (h >= 2 && h < 3)
-        RGB_(0, c, x);
+        rgb_set_(&rgb, 0, c, x);
     else if (h >= 3 && h < 4)
-        RGB_(0, x, c);
+        rgb_set_(&rgb, 0, x, c);
     else if (h >= 4 && h < 5)
-        RGB_(x, 0, c);
+        rgb_set_(&rgb, x, 0, c);
     else if (h >= 5 && h < 6)
-        RGB_(c, 0, x);
+        rgb_set_(&rgb, c, 0, x);
 
-    out->r = (unsigned char) ((r + m) * 255);
-    out->g = (unsigned char) ((g + m) * 255);
-    out->b = (unsigned char) ((b + m) * 255);
+    out->r = (unsigned char) ((rgb.r + m) * 255);
+    out->g = (unsigned char) ((rgb.g + m) * 255);
+    out->b = (unsigned char) ((rgb.b + m) * 255);
 }
 
-#undef RGB_
+#undef rgb_set_
 #undef fmod_
 #undef abs_
 #undef trunc_
