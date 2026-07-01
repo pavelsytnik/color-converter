@@ -6,6 +6,15 @@
 /**
  * @file color_convert.h
  * @brief A tiny header-only library for interacting with colors.
+ *
+ * Define `COLOR_CONVERT_IMPLEMENTATION` in exactly one C/C++ source file
+ * before including this header to generate the library implementation.
+ *
+ * Example:
+ * @code
+ * #define COLOR_CONVERT_IMPLEMENTATION
+ * #include "color_convert.h"
+ * @endcode
  */
 
 #ifndef COLOR_CONVERT_H
