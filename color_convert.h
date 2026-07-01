@@ -349,7 +349,7 @@ void rgb2hex(const struct rgb *in, int *out)
     *out = in->r << 16 | in->g << 8 | in->b;
 }
 
-#define trunc_(x) ((float) (int) (x))
+#define trunc_(x) ((float)(int)(x))
 #define abs_(x) ((x) >= 0 ? (x) : -(x))
 #define fmod_(x, y) ((x) - trunc_((x) / (y)) * (y))
 
@@ -383,9 +383,9 @@ void hsl2rgb(const struct hsl *in, struct rgb *out)
     else if (h >= 5 && h < 6)
         rgb_set_(&rgb, c, 0, x);
 
-    out->r = (unsigned char) ((rgb.r + m) * 255);
-    out->g = (unsigned char) ((rgb.g + m) * 255);
-    out->b = (unsigned char) ((rgb.b + m) * 255);
+    out->r = (unsigned char)((rgb.r + m) * 255);
+    out->g = (unsigned char)((rgb.g + m) * 255);
+    out->b = (unsigned char)((rgb.b + m) * 255);
 }
 
 void hsv2rgb(const struct hsv *in, struct rgb *out)
@@ -411,9 +411,9 @@ void hsv2rgb(const struct hsv *in, struct rgb *out)
     else if (h >= 5 && h < 6)
         rgb_set_(&rgb, c, 0, x);
 
-    out->r = (unsigned char) ((rgb.r + m) * 255);
-    out->g = (unsigned char) ((rgb.g + m) * 255);
-    out->b = (unsigned char) ((rgb.b + m) * 255);
+    out->r = (unsigned char)((rgb.r + m) * 255);
+    out->g = (unsigned char)((rgb.g + m) * 255);
+    out->b = (unsigned char)((rgb.b + m) * 255);
 }
 
 #undef rgb_set_
@@ -423,9 +423,9 @@ void hsv2rgb(const struct hsv *in, struct rgb *out)
 
 void cmyk2rgb(const struct cmyk *in, struct rgb *out)
 {
-    out->r = (unsigned char) (255 * (1 - in->c) * (1 - in->k));
-    out->g = (unsigned char) (255 * (1 - in->m) * (1 - in->k));
-    out->b = (unsigned char) (255 * (1 - in->y) * (1 - in->k));
+    out->r = (unsigned char)(255 * (1 - in->c) * (1 - in->k));
+    out->g = (unsigned char)(255 * (1 - in->m) * (1 - in->k));
+    out->b = (unsigned char)(255 * (1 - in->y) * (1 - in->k));
 }
 
 void rgba2rgb(const struct rgba *in, struct rgb *out)
@@ -437,9 +437,9 @@ void rgba2rgb(const struct rgba *in, struct rgb *out)
 
 void hex2rgb(const int *in, struct rgb *out)
 {
-    out->r = (unsigned char) (*in >> 16);
-    out->g = (unsigned char) (*in >> 8);
-    out->b = (unsigned char) (*in);
+    out->r = (unsigned char)(*in >> 16);
+    out->g = (unsigned char)(*in >> 8);
+    out->b = (unsigned char)(*in);
 }
 
 #define channel_websafe_(c) \
