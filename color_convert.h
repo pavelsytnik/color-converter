@@ -352,7 +352,9 @@ void rgb2rgba(const struct rgb *in, struct rgba *out)
 
 void rgb2hex(const struct rgb *in, int *out)
 {
-    *out = in->r << 16 | in->g << 8 | in->b;
+    *out = (unsigned)in->r << 16
+         | (unsigned)in->g << 8
+         | (unsigned)in->b;
 }
 
 void hsl2rgb(const struct hsl *in, struct rgb *out)
@@ -433,9 +435,11 @@ void rgba2rgb(const struct rgba *in, struct rgb *out)
 
 void hex2rgb(const int *in, struct rgb *out)
 {
-    out->r = (unsigned char)(*in >> 16);
-    out->g = (unsigned char)(*in >> 8);
-    out->b = (unsigned char)(*in);
+    unsigned value = (unsigned)(*in);
+
+    out->r = (value >> 16) & 0xFF;
+    out->g = (value >> 8) & 0xFF;
+    out->b = value & 0xFF;
 }
 
 #define channel_websafe_(c)          \
@@ -453,9 +457,9 @@ void hex_websafe(int *color)
 {
     unsigned value = (unsigned)(*color);
 
-    unsigned char r = (unsigned char)(value >> 16);
-    unsigned char g = (unsigned char)(value >> 8);
-    unsigned char b = (unsigned char)(value);
+    unsigned char r = (value >> 16) & 0xFF;
+    unsigned char g = (value >> 8) & 0xFF;
+    unsigned char b = value & 0xFF;
 
     *color = (channel_websafe_(r) << 16)
            | (channel_websafe_(g) << 8)
