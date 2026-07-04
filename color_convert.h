@@ -357,26 +357,29 @@ void rgb2hex(const struct rgb *in, int *out)
 
 void hsl2rgb(const struct hsl *in, struct rgb *out)
 {
-    float h = in->h/60.f, s = in->s, l = in->l;
+    float h = in->h / 60.f;
+    float s = in->s;
+    float l = in->l;
 
-    float c = (1.f - abs_(2.f*l - 1.f)) * s;
+    float c = (1.f - abs_(2.f * l - 1.f)) * s;
     float x = c * (1.f - abs_(fmod_(h, 2.f) - 1.f));
-    float m = l - c/2.f;
+    float m = l - c / 2.f;
 
     struct rgb rgb;
 
-    if (h >= 0.f && h < 1.f)
+    if (h >= 0.f && h < 1.f) {
         rgb_set_(&rgb, c, x, 0);
-    else if (h >= 1.f && h < 2.f)
+    } else if (h >= 1.f && h < 2.f) {
         rgb_set_(&rgb, x, c, 0);
-    else if (h >= 2.f && h < 3.f)
+    } else if (h >= 2.f && h < 3.f) {
         rgb_set_(&rgb, 0, c, x);
-    else if (h >= 3.f && h < 4.f)
+    } else if (h >= 3.f && h < 4.f) {
         rgb_set_(&rgb, 0, x, c);
-    else if (h >= 4.f && h < 5.f)
+    } else if (h >= 4.f && h < 5.f) {
         rgb_set_(&rgb, x, 0, c);
-    else if (h >= 5.f && h < 6.f)
+    } else {
         rgb_set_(&rgb, c, 0, x);
+    }
 
     out->r = (unsigned char)((rgb.r + m) * 255.f);
     out->g = (unsigned char)((rgb.g + m) * 255.f);
@@ -385,7 +388,9 @@ void hsl2rgb(const struct hsl *in, struct rgb *out)
 
 void hsv2rgb(const struct hsv *in, struct rgb *out)
 {
-    float h = in->h/60.f, s = in->s, v = in->v;
+    float h = in->h / 60.f;
+    float s = in->s;
+    float v = in->v;
 
     float c = v * s;
     float x = c * (1.f - abs_(fmod_(h, 2.f) - 1.f));
@@ -393,18 +398,19 @@ void hsv2rgb(const struct hsv *in, struct rgb *out)
 
     struct rgb rgb;
 
-    if (h >= 0.f && h < 1.f)
+    if (h >= 0.f && h < 1.f) {
         rgb_set_(&rgb, c, x, 0);
-    else if (h >= 1.f && h < 2.f)
+    } else if (h >= 1.f && h < 2.f) {
         rgb_set_(&rgb, x, c, 0);
-    else if (h >= 2.f && h < 3.f)
+    } else if (h >= 2.f && h < 3.f) {
         rgb_set_(&rgb, 0, c, x);
-    else if (h >= 3.f && h < 4.f)
+    } else if (h >= 3.f && h < 4.f) {
         rgb_set_(&rgb, 0, x, c);
-    else if (h >= 4.f && h < 5.f)
+    } else if (h >= 4.f && h < 5.f) {
         rgb_set_(&rgb, x, 0, c);
-    else if (h >= 5.f && h < 6.f)
+    } else {
         rgb_set_(&rgb, c, 0, x);
+    }
 
     out->r = (unsigned char)((rgb.r + m) * 255.f);
     out->g = (unsigned char)((rgb.g + m) * 255.f);
