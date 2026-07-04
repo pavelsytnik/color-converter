@@ -438,22 +438,28 @@ void hex2rgb(const int *in, struct rgb *out)
     out->b = (unsigned char)(*in);
 }
 
-#define channel_websafe_(c) \
-    ( (c) <= 0x19 ? 0x00    \
-    : (c) <= 0x4C ? 0x33    \
-    : (c) <= 0x7F ? 0x66    \
-    : (c) <= 0xB2 ? 0x99    \
-    : (c) <= 0xE5 ? 0xCC    \
-    :               0xFF    )
+#define channel_websafe_(c)          \
+(                                    \
+    (unsigned)( ((c) <= 0x19) ? 0x00 \
+              : ((c) <= 0x4C) ? 0x33 \
+              : ((c) <= 0x7F) ? 0x66 \
+              : ((c) <= 0xB2) ? 0x99 \
+              : ((c) <= 0xE5) ? 0xCC \
+              :                 0xFF \
+              )                      \
+)
 
 void hex_websafe(int *color)
 {
-    int bits;
-    for (bits = 16; bits >= 0; bits -= 8) {
-        int mask = ~(0xFF << bits);
-        unsigned char channel = *color >> bits;
-        *color = (*color & mask) | (channel_websafe_(channel) << bits);
-    }
+    unsigned value = (unsigned)(*color);
+
+    unsigned char r = (unsigned char)(value >> 16);
+    unsigned char g = (unsigned char)(value >> 8);
+    unsigned char b = (unsigned char)(value);
+
+    *color = (channel_websafe_(r) << 16)
+           | (channel_websafe_(g) << 8)
+           | (channel_websafe_(b));
 }
 
 #undef channel_websafe_
