@@ -273,23 +273,29 @@ void rgb2hsl(const struct rgb *in, struct hsl *out)
     float cmax = max_(max_(r, g), b);
     float cmin = min_(min_(r, g), b);
 
+    float d = cmax - cmin;
+
     out->l = (cmax + cmin) / 2.f;
 
-    if (cmax == cmin)
-        out->h = out->s = 0.f;
-    else {
-        float d = cmax - cmin;
-
-        out->s = out->l > 0.5f ? d / (2.f - cmax - cmin) : d / (cmax + cmin);
-
-        if (cmax == r)
-            out->h = (g - b) / d + (g < b ? 6.f : 0.f);
-        else if (cmax == g)
-            out->h = (b - r) / d + 2.f;
-        else if (cmax == b)
-            out->h = (r - g) / d + 4.f;
-        out->h *= 60.f;
+    if (d == 0.f) {
+        out->h = 0.f;
+        out->s = 0.f;
+        return;
     }
+
+    out->s = (out->l > 0.5f)
+        ? (d / (2.f - cmax - cmin))
+        : (d / (cmax + cmin));
+
+    if (cmax == r) {
+        out->h = (g - b) / d + (g < b ? 6.f : 0.f);
+    } else if (cmax == g) {
+        out->h = (b - r) / d + 2.f;
+    } else {
+        out->h = (r - g) / d + 4.f;
+    }
+
+    out->h *= 60.f;
 }
 
 void rgb2hsv(const struct rgb *in, struct hsv *out)
@@ -300,26 +306,28 @@ void rgb2hsv(const struct rgb *in, struct hsv *out)
 
     float cmax = max_(max_(r, g), b);
     float cmin = min_(min_(r, g), b);
+
     float d = cmax - cmin;
 
     out->v = cmax;
 
-    if (d == 0.f)
+    if (d == 0.f) {
         out->h = 0.f;
-    else {
-        if (cmax == r)
-            out->h = (g - b) / d + (g < b ? 6.f : 0.f);
-        else if (cmax == g)
-            out->h = (b - r) / d + 2.f;
-        else if (cmax == b)
-            out->h = (r - g) / d + 4.f;
-        out->h *= 60.f;
+        out->s = 0.f;
+        return;
     }
 
-    if (cmax == 0.f)
-        out->s = 0.f;
-    else
-        out->s = d / out->v;
+    out->s = (cmax == 0.f) ? 0.f : (d / cmax);
+
+    if (cmax == r) {
+        out->h = (g - b) / d + (g < b ? 6.f : 0.f);
+    } else if (cmax == g) {
+        out->h = (b - r) / d + 2.f;
+    } else {
+        out->h = (r - g) / d + 4.f;
+    }
+
+    out->h *= 60.f;
 }
 
 void rgb2cmyk(const struct rgb *in, struct cmyk *out)
