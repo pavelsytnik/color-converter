@@ -337,6 +337,7 @@ void rgb2cmyk(const struct rgb *in, struct cmyk *out)
     float b = in->b / 255.f;
 
     out->k = 1.f - max_(max_(r, g), b);
+
     out->c = (1.f - r - out->k) / (1.f - out->k);
     out->m = (1.f - g - out->k) / (1.f - out->k);
     out->y = (1.f - b - out->k) / (1.f - out->k);
@@ -501,9 +502,9 @@ void rgb_blend(struct rgb *dst, const struct rgba *src)
 {
     float a = src->a / 255.f;
 
-    dst->r = dst->r * (1.f - a) + src->r * a;
-    dst->g = dst->g * (1.f - a) + src->g * a;
-    dst->b = dst->b * (1.f - a) + src->b * a;
+    dst->r = (unsigned char)(dst->r * (1.f - a) + src->r * a);
+    dst->g = (unsigned char)(dst->g * (1.f - a) + src->g * a);
+    dst->b = (unsigned char)(dst->b * (1.f - a) + src->b * a);
 }
 
 #undef rgb_set_
