@@ -461,21 +461,23 @@ void hex_websafe(int *color)
 void hsl2hsv(const struct hsl *in, struct hsv *out)
 {
     out->h = in->h;
+
     out->v = in->l + in->s * min_(in->l, 1.f - in->l);
-    if (out->v == 0.f)
-        out->s = 0.f;
-    else
-        out->s = 2.f * (1.f - in->l / out->v);
+
+    out->s = (out->v > 0.f)
+        ? 2.f * (1.f - in->l / out->v)
+        : 0.f;
 }
 
 void hsv2hsl(const struct hsv *in, struct hsl *out)
 {
     out->h = in->h;
+
     out->l = in->v * (1.f - in->s / 2.f);
-    if (out->l == 0.f || out->l == 1.f)
-        out->s = 0.f;
-    else
-        out->s = (in->v - out->l) / min_(out->l, 1.f - out->l);
+
+    out->s = (out->l > 0.f && out->l < 1.f)
+        ? (in->v - out->l) / min_(out->l, 1.f - out->l)
+        : 0.f;
 }
 
 void rgb_invert(struct rgb *color)
