@@ -244,40 +244,24 @@ do {                              \
 
 int hsl_valid(const struct hsl *color)
 {
-    if (color->h < 0.f || color->h >= 360.f)
-        return 0;
-    if (color->s < 0.f || color->s > 1.f)
-        return 0;
-    if (color->l < 0.f || color->l > 1.f)
-        return 0;
-
-    return 1;
+    return (color->h >= 0.f && color->h < 360.f) &&
+           (color->s >= 0.f && color->s <= 1.f) &&
+           (color->l >= 0.f && color->l <= 1.f);
 }
 
 int hsv_valid(const struct hsv *color)
 {
-    if (color->h < 0.f || color->h >= 360.f)
-        return 0;
-    if (color->s < 0.f || color->s > 1.f)
-        return 0;
-    if (color->v < 0.f || color->v > 1.f)
-        return 0;
-
-    return 1;
+    return (color->h >= 0.f && color->h < 360.f) &&
+           (color->s >= 0.f && color->s <= 1.f) &&
+           (color->v >= 0.f && color->v <= 1.f);
 }
 
 int cmyk_valid(const struct cmyk *color)
 {
-    if (color->c < 0.f || color->c > 1.f)
-        return 0;
-    if (color->m < 0.f || color->m > 1.f)
-        return 0;
-    if (color->y < 0.f || color->y > 1.f)
-        return 0;
-    if (color->k < 0.f || color->k > 1.f)
-        return 0;
-
-    return 1;
+    return (color->c >= 0.f && color->c <= 1.f) &&
+           (color->m >= 0.f && color->m <= 1.f) &&
+           (color->y >= 0.f && color->y <= 1.f) &&
+           (color->k >= 0.f && color->k <= 1.f);
 }
 
 void rgb2hsl(const struct rgb *in, struct hsl *out)
