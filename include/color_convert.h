@@ -5,7 +5,7 @@
 
 /**
  * @file color_convert.h
- * @brief A tiny header-only library for interacting with colors.
+ * @brief A tiny header-only library for color conversion and manipulation.
  *
  * Define `COLOR_CONVERT_IMPLEMENTATION` in exactly one C/C++ source file
  * before including this header to generate the library implementation.
@@ -28,71 +28,71 @@ extern "C" {
  * HSL color format.
  */
 typedef struct hsl {
-    float h; /**< Hue         [0; 360). */
-    float s; /**< Saturation  [0; 1].   */
-    float l; /**< Lightness   [0; 1].   */
+    float h; /**< Hue         [0, 360). */
+    float s; /**< Saturation  [0, 1].   */
+    float l; /**< Lightness   [0, 1].   */
 } hsl_t;
 
 /**
  * HSV color format.
  */
 typedef struct hsv {
-    float h; /**< Hue         [0; 360). */
-    float s; /**< Saturation  [0; 1].   */
-    float v; /**< Value       [0; 1].   */
+    float h; /**< Hue         [0, 360). */
+    float s; /**< Saturation  [0, 1].   */
+    float v; /**< Value       [0, 1].   */
 } hsv_t;
 
 /**
- * RGB color format.
+ * 8-bit sRGB color format.
  */
 typedef struct rgb {
-    unsigned char r; /**< Red    [0; 255]. */
-    unsigned char g; /**< Green  [0; 255]. */
-    unsigned char b; /**< Blue   [0; 255]. */
+    unsigned char r; /**< Red    [0, 255]. */
+    unsigned char g; /**< Green  [0, 255]. */
+    unsigned char b; /**< Blue   [0, 255]. */
 } rgb_t;
 
 /**
- * RGBA color format.
+ * 8-bit sRGB color format with alpha.
  */
 typedef struct rgba {
-    unsigned char r; /**< Red    [0; 255]. */
-    unsigned char g; /**< Green  [0; 255]. */
-    unsigned char b; /**< Blue   [0; 255]. */
-    unsigned char a; /**< Alpha  [0; 255]. */
+    unsigned char r; /**< Red    [0, 255]. */
+    unsigned char g; /**< Green  [0, 255]. */
+    unsigned char b; /**< Blue   [0, 255]. */
+    unsigned char a; /**< Alpha  [0, 255]. */
 } rgba_t;
 
 /**
  * CMYK color format.
  */
 typedef struct cmyk {
-    float c; /**< Cyan    [0; 1]. */
-    float m; /**< Magenta [0; 1]. */
-    float y; /**< Yellow  [0; 1]. */
-    float k; /**< Black   [0; 1]. */
+    float c; /**< Cyan       [0, 1]. */
+    float m; /**< Magenta    [0, 1]. */
+    float y; /**< Yellow     [0, 1]. */
+    float k; /**< Black/Key  [0, 1]. */
 } cmyk_t;
 
 /**
- * @brief Check if an HSL structure has correct data.
+ * @brief Check whether an HSL color is valid.
  *
- * @param color A pointer to an HSL color.
+ * @param color An HSL color.
  *
  * @return Non-zero if valid, zero otherwise.
  */
 int hsl_valid(const struct hsl *color);
 
 /**
- * @brief Check if an HSV structure has correct data.
+ * @brief Check whether an HSV color is valid.
  *
- * @param color A pointer to an HSV color.
+ * @param color An HSV color.
  *
  * @return Non-zero if valid, zero otherwise.
  */
 int hsv_valid(const struct hsv *color);
 
 /**
- * @brief Check if a CMYK structure has correct data.
+ * @brief Check whether a CMYK color is valid.
  *
- * @param color A pointer to a CMYK color.
+ * @param color A CMYK color.
  *
  * @return Non-zero if valid, zero otherwise.
  */
@@ -101,115 +101,114 @@ int cmyk_valid(const struct cmyk *color);
 /**
  * @brief Convert an RGB color to an HSL one.
  *
- * @param[in]  in  A pointer to an RGB color.
- * @param[out] out A pointer to an HSL color.
+ * @param[in]  in  An RGB color.
+ * @param[out] out An HSL color.
  */
 void rgb2hsl(const struct rgb *in, struct hsl *out);
 
 /**
  * @brief Convert an RGB color to an HSV one.
  *
- * @param[in]  in  A pointer to an RGB color.
- * @param[out] out A pointer to an HSV color.
+ * @param[in]  in  An RGB color.
+ * @param[out] out An HSV color.
  */
 void rgb2hsv(const struct rgb *in, struct hsv *out);
 
 /**
  * @brief Convert an RGB color to a CMYK one.
  *
- * @param[in]  in  A pointer to an RGB color.
- * @param[out] out A pointer to a CMYK color.
+ * @param[in]  in  An RGB color.
+ * @param[out] out A CMYK color.
  */
 void rgb2cmyk(const struct rgb *in, struct cmyk *out);
 
 /**
  * @brief Convert an RGB color to an RGBA one.
  *
- * @param[in]  in  A pointer to an RGB color.
- * @param[out] out A pointer to an RGBA color.
+ * @param[in]  in  An RGB color.
+ * @param[out] out An RGBA color.
  */
 void rgb2rgba(const struct rgb *in, struct rgba *out);
 
 /**
- * @brief Convert an RGB color to a HEX one.
+ * @brief Convert an RGB color to a hexadecimal one.
  *
- * @param[in]  in  A pointer to an RGB color.
- * @param[out] out A pointer to a HEX color.
+ * @param[in]  in  An RGB color.
+ * @param[out] out A hexadecimal color.
  */
 void rgb2hex(const struct rgb *in, int *out);
 
 /**
  * @brief Convert an HSL color to an RGB one.
  *
- * @param[in]  in  A pointer to an HSL color.
- * @param[out] out A pointer to an RGB color.
+ * @param[in]  in  An HSL color.
+ * @param[out] out An RGB color.
  */
 void hsl2rgb(const struct hsl *in, struct rgb *out);
 
 /**
  * @brief Convert an HSV color to an RGB one.
  *
- * @param[in]  in  A pointer to an HSV color.
- * @param[out] out A pointer to an RGB color.
+ * @param[in]  in  An HSV color.
+ * @param[out] out An RGB color.
  */
 void hsv2rgb(const struct hsv *in, struct rgb *out);
 
 /**
  * @brief Convert a CMYK color to an RGB one.
  *
- * @param[in]  in  A pointer to a CMYK color.
- * @param[out] out A pointer to an RGB color.
+ * @param[in]  in  A CMYK color.
+ * @param[out] out An RGB color.
  */
 void cmyk2rgb(const struct cmyk *in, struct rgb *out);
 
 /**
  * @brief Convert an RGBA color to an RGB one.
  *
- * @param[in]  in  A pointer to an RGBA color.
- * @param[out] out A pointer to an RGB color.
+ * @param[in]  in  An RGBA color.
+ * @param[out] out An RGB color.
  */
 void rgba2rgb(const struct rgba *in, struct rgb *out);
 
 /**
- * @brief Convert a HEX color to an RGB one.
+ * @brief Convert a hexadecimal color to an RGB one.
  *
- * @param[in]  in  A pointer to a HEX color.
- * @param[out] out A pointer to an RGB color.
+ * @param[in]  in  A hexadecimal color.
+ * @param[out] out An RGB color.
  */
 void hex2rgb(const int *in, struct rgb *out);
 
 /**
  * @brief Convert an HSL color to an HSV one.
  *
- * @param[in]  in  A pointer to an HSL color.
- * @param[out] out A pointer to an HSV color.
+ * @param[in]  in  An HSL color.
+ * @param[out] out An HSV color.
  */
 void hsl2hsv(const struct hsl *in, struct hsv *out);
 
 /**
  * @brief Convert an HSV color to an HSL one.
  *
- * @param[in]  in  A pointer to an HSV color.
- * @param[out] out A pointer to an HSL color.
+ * @param[in]  in  An HSV color.
+ * @param[out] out An HSL color.
  */
 void hsv2hsl(const struct hsv *in, struct hsl *out);
 
 /**
  * @brief Invert an RGB color.
  *
- * @param[in,out] color A pointer to an RGB color.
+ * @param[in,out] color An RGB color.
  */
 void rgb_invert(struct rgb *color);
 
 /**
- * @brief Blend a solid RGB color with an RGBA color.
+ * @brief Blend an RGBA color over an RGB color.
  *
- * The result of the blend is stored back in `dst`.
- * The alpha channel of `src` determines the blend ratio.
+ * The blended result is stored in `dst`.
+ * The alpha channel of `src` determines the blend factor.
  *
- * @param[in,out] dst A pointer to the background for the second parameter.
- * @param[in]     src A pointer to an RGBA color which will be blended with
- *                    the first.
+ * @param[in,out] dst The background RGB color.
+ * @param[in]     src The foreground RGBA color.
  */
 void rgb_blend(struct rgb *dst, const struct rgba *src);
 
@@ -218,7 +217,7 @@ void rgb_blend(struct rgb *dst, const struct rgba *src);
  *
  * @deprecated This function will be deleted in version 2.0.
  *
- * @param[in,out] color A pointer to a hexadecimal color.
+ * @param[in,out] color A hexadecimal color.
  */
 void hex_websafe(int *color);
 
