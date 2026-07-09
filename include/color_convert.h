@@ -10,8 +10,27 @@
  * Define `COLOR_CONVERT_IMPLEMENTATION` in exactly one C/C++ source file
  * before including this header to generate the library implementation.
  *
- * Example:
+ * To generate a static implementation, define `COLOR_CONVERT_STATIC` together
+ * with `COLOR_CONVERT_IMPLEMENTATION`.
+ *
+ * `COLOR_CONVERT_API` may be defined before including this header to customize
+ * the linkage specifier used for API functions.
+ *
+ * Examples:
+ *
  * @code
+ * #define COLOR_CONVERT_IMPLEMENTATION
+ * #include "color_convert.h"
+ * @endcode
+ *
+ * @code
+ * #define COLOR_CONVERT_STATIC
+ * #define COLOR_CONVERT_IMPLEMENTATION
+ * #include "color_convert.h"
+ * @endcode
+ *
+ * @code
+ * #define COLOR_CONVERT_API __declspec(dllexport)
  * #define COLOR_CONVERT_IMPLEMENTATION
  * #include "color_convert.h"
  * @endcode
@@ -22,6 +41,14 @@
 
 #ifdef __cplusplus
 extern "C" {
+#endif
+
+#ifndef COLOR_CONVERT_API
+# ifdef COLOR_CONVERT_STATIC
+#  define COLOR_CONVERT_API static
+# else
+#  define COLOR_CONVERT_API extern
+# endif
 #endif
 
 /**
@@ -78,7 +105,7 @@ typedef struct cmyk {
  *
  * @return Non-zero if valid, zero otherwise.
  */
-int hsl_valid(const struct hsl *color);
+COLOR_CONVERT_API int hsl_valid(const struct hsl *color);
 
 /**
  * @brief Check whether an HSV color is valid.
@@ -87,7 +114,7 @@ int hsl_valid(const struct hsl *color);
  *
  * @return Non-zero if valid, zero otherwise.
  */
-int hsv_valid(const struct hsv *color);
+COLOR_CONVERT_API int hsv_valid(const struct hsv *color);
 
 /**
  * @brief Check whether a CMYK color is valid.
@@ -96,7 +123,7 @@ int hsv_valid(const struct hsv *color);
  *
  * @return Non-zero if valid, zero otherwise.
  */
-int cmyk_valid(const struct cmyk *color);
+COLOR_CONVERT_API int cmyk_valid(const struct cmyk *color);
 
 /**
  * @brief Convert an RGB color to an HSL one.
@@ -104,7 +131,7 @@ int cmyk_valid(const struct cmyk *color);
  * @param[in]  in  An RGB color.
  * @param[out] out An HSL color.
  */
-void rgb2hsl(const struct rgb *in, struct hsl *out);
+COLOR_CONVERT_API void rgb2hsl(const struct rgb *in, struct hsl *out);
 
 /**
  * @brief Convert an RGB color to an HSV one.
@@ -112,7 +139,7 @@ void rgb2hsl(const struct rgb *in, struct hsl *out);
  * @param[in]  in  An RGB color.
  * @param[out] out An HSV color.
  */
-void rgb2hsv(const struct rgb *in, struct hsv *out);
+COLOR_CONVERT_API void rgb2hsv(const struct rgb *in, struct hsv *out);
 
 /**
  * @brief Convert an RGB color to a CMYK one.
@@ -120,7 +147,7 @@ void rgb2hsv(const struct rgb *in, struct hsv *out);
  * @param[in]  in  An RGB color.
  * @param[out] out A CMYK color.
  */
-void rgb2cmyk(const struct rgb *in, struct cmyk *out);
+COLOR_CONVERT_API void rgb2cmyk(const struct rgb *in, struct cmyk *out);
 
 /**
  * @brief Convert an RGB color to an RGBA one.
@@ -128,7 +155,7 @@ void rgb2cmyk(const struct rgb *in, struct cmyk *out);
  * @param[in]  in  An RGB color.
  * @param[out] out An RGBA color.
  */
-void rgb2rgba(const struct rgb *in, struct rgba *out);
+COLOR_CONVERT_API void rgb2rgba(const struct rgb *in, struct rgba *out);
 
 /**
  * @brief Convert an RGB color to a hexadecimal one.
@@ -136,7 +163,7 @@ void rgb2rgba(const struct rgb *in, struct rgba *out);
  * @param[in]  in  An RGB color.
  * @param[out] out A hexadecimal color.
  */
-void rgb2hex(const struct rgb *in, int *out);
+COLOR_CONVERT_API void rgb2hex(const struct rgb *in, int *out);
 
 /**
  * @brief Convert an HSL color to an RGB one.
@@ -144,7 +171,7 @@ void rgb2hex(const struct rgb *in, int *out);
  * @param[in]  in  An HSL color.
  * @param[out] out An RGB color.
  */
-void hsl2rgb(const struct hsl *in, struct rgb *out);
+COLOR_CONVERT_API void hsl2rgb(const struct hsl *in, struct rgb *out);
 
 /**
  * @brief Convert an HSV color to an RGB one.
@@ -152,7 +179,7 @@ void hsl2rgb(const struct hsl *in, struct rgb *out);
  * @param[in]  in  An HSV color.
  * @param[out] out An RGB color.
  */
-void hsv2rgb(const struct hsv *in, struct rgb *out);
+COLOR_CONVERT_API void hsv2rgb(const struct hsv *in, struct rgb *out);
 
 /**
  * @brief Convert a CMYK color to an RGB one.
@@ -160,7 +187,7 @@ void hsv2rgb(const struct hsv *in, struct rgb *out);
  * @param[in]  in  A CMYK color.
  * @param[out] out An RGB color.
  */
-void cmyk2rgb(const struct cmyk *in, struct rgb *out);
+COLOR_CONVERT_API void cmyk2rgb(const struct cmyk *in, struct rgb *out);
 
 /**
  * @brief Convert an RGBA color to an RGB one.
@@ -168,7 +195,7 @@ void cmyk2rgb(const struct cmyk *in, struct rgb *out);
  * @param[in]  in  An RGBA color.
  * @param[out] out An RGB color.
  */
-void rgba2rgb(const struct rgba *in, struct rgb *out);
+COLOR_CONVERT_API void rgba2rgb(const struct rgba *in, struct rgb *out);
 
 /**
  * @brief Convert a hexadecimal color to an RGB one.
@@ -176,7 +203,7 @@ void rgba2rgb(const struct rgba *in, struct rgb *out);
  * @param[in]  in  A hexadecimal color.
  * @param[out] out An RGB color.
  */
-void hex2rgb(const int *in, struct rgb *out);
+COLOR_CONVERT_API void hex2rgb(const int *in, struct rgb *out);
 
 /**
  * @brief Convert an HSL color to an HSV one.
@@ -184,7 +211,7 @@ void hex2rgb(const int *in, struct rgb *out);
  * @param[in]  in  An HSL color.
  * @param[out] out An HSV color.
  */
-void hsl2hsv(const struct hsl *in, struct hsv *out);
+COLOR_CONVERT_API void hsl2hsv(const struct hsl *in, struct hsv *out);
 
 /**
  * @brief Convert an HSV color to an HSL one.
@@ -192,14 +219,14 @@ void hsl2hsv(const struct hsl *in, struct hsv *out);
  * @param[in]  in  An HSV color.
  * @param[out] out An HSL color.
  */
-void hsv2hsl(const struct hsv *in, struct hsl *out);
+COLOR_CONVERT_API void hsv2hsl(const struct hsv *in, struct hsl *out);
 
 /**
  * @brief Invert an RGB color.
  *
  * @param[in,out] color An RGB color.
  */
-void rgb_invert(struct rgb *color);
+COLOR_CONVERT_API void rgb_invert(struct rgb *color);
 
 /**
  * @brief Blend an RGBA color over an RGB color.
@@ -210,7 +237,7 @@ void rgb_invert(struct rgb *color);
  * @param[in,out] dst The background RGB color.
  * @param[in]     src The foreground RGBA color.
  */
-void rgb_blend(struct rgb *dst, const struct rgba *src);
+COLOR_CONVERT_API void rgb_blend(struct rgb *dst, const struct rgba *src);
 
 /**
  * @brief Make a hexadecimal color web-safe.
@@ -219,7 +246,7 @@ void rgb_blend(struct rgb *dst, const struct rgba *src);
  *
  * @param[in,out] color A hexadecimal color.
  */
-void hex_websafe(int *color);
+COLOR_CONVERT_API void hex_websafe(int *color);
 
 #ifdef __cplusplus
 }
@@ -241,21 +268,21 @@ do {                              \
     (rgb)->b = (b_);              \
 } while (0)
 
-int hsl_valid(const struct hsl *color)
+COLOR_CONVERT_API int hsl_valid(const struct hsl *color)
 {
     return (color->h >= 0.f && color->h < 360.f) &&
            (color->s >= 0.f && color->s <= 1.f) &&
            (color->l >= 0.f && color->l <= 1.f);
 }
 
-int hsv_valid(const struct hsv *color)
+COLOR_CONVERT_API int hsv_valid(const struct hsv *color)
 {
     return (color->h >= 0.f && color->h < 360.f) &&
            (color->s >= 0.f && color->s <= 1.f) &&
            (color->v >= 0.f && color->v <= 1.f);
 }
 
-int cmyk_valid(const struct cmyk *color)
+COLOR_CONVERT_API int cmyk_valid(const struct cmyk *color)
 {
     return (color->c >= 0.f && color->c <= 1.f) &&
            (color->m >= 0.f && color->m <= 1.f) &&
@@ -263,7 +290,7 @@ int cmyk_valid(const struct cmyk *color)
            (color->k >= 0.f && color->k <= 1.f);
 }
 
-void rgb2hsl(const struct rgb *in, struct hsl *out)
+COLOR_CONVERT_API void rgb2hsl(const struct rgb *in, struct hsl *out)
 {
     float r = in->r / 255.f;
     float g = in->g / 255.f;
@@ -297,7 +324,7 @@ void rgb2hsl(const struct rgb *in, struct hsl *out)
     out->h *= 60.f;
 }
 
-void rgb2hsv(const struct rgb *in, struct hsv *out)
+COLOR_CONVERT_API void rgb2hsv(const struct rgb *in, struct hsv *out)
 {
     float r = in->r / 255.f;
     float g = in->g / 255.f;
@@ -329,7 +356,7 @@ void rgb2hsv(const struct rgb *in, struct hsv *out)
     out->h *= 60.f;
 }
 
-void rgb2cmyk(const struct rgb *in, struct cmyk *out)
+COLOR_CONVERT_API void rgb2cmyk(const struct rgb *in, struct cmyk *out)
 {
     float r = in->r / 255.f;
     float g = in->g / 255.f;
@@ -342,7 +369,7 @@ void rgb2cmyk(const struct rgb *in, struct cmyk *out)
     out->y = (1.f - b - out->k) / (1.f - out->k);
 }
 
-void rgb2rgba(const struct rgb *in, struct rgba *out)
+COLOR_CONVERT_API void rgb2rgba(const struct rgb *in, struct rgba *out)
 {
     out->r = in->r;
     out->g = in->g;
@@ -350,14 +377,14 @@ void rgb2rgba(const struct rgb *in, struct rgba *out)
     out->a = 0xFF;
 }
 
-void rgb2hex(const struct rgb *in, int *out)
+COLOR_CONVERT_API void rgb2hex(const struct rgb *in, int *out)
 {
     *out = (unsigned)in->r << 16
          | (unsigned)in->g << 8
          | (unsigned)in->b;
 }
 
-void hsl2rgb(const struct hsl *in, struct rgb *out)
+COLOR_CONVERT_API void hsl2rgb(const struct hsl *in, struct rgb *out)
 {
     float h = in->h / 60.f;
     float s = in->s;
@@ -388,7 +415,7 @@ void hsl2rgb(const struct hsl *in, struct rgb *out)
     out->b = (unsigned char)((rgb.b + m) * 255.f);
 }
 
-void hsv2rgb(const struct hsv *in, struct rgb *out)
+COLOR_CONVERT_API void hsv2rgb(const struct hsv *in, struct rgb *out)
 {
     float h = in->h / 60.f;
     float s = in->s;
@@ -419,21 +446,21 @@ void hsv2rgb(const struct hsv *in, struct rgb *out)
     out->b = (unsigned char)((rgb.b + m) * 255.f);
 }
 
-void cmyk2rgb(const struct cmyk *in, struct rgb *out)
+COLOR_CONVERT_API void cmyk2rgb(const struct cmyk *in, struct rgb *out)
 {
     out->r = (unsigned char)(255.f * (1.f - in->c) * (1.f - in->k));
     out->g = (unsigned char)(255.f * (1.f - in->m) * (1.f - in->k));
     out->b = (unsigned char)(255.f * (1.f - in->y) * (1.f - in->k));
 }
 
-void rgba2rgb(const struct rgba *in, struct rgb *out)
+COLOR_CONVERT_API void rgba2rgb(const struct rgba *in, struct rgb *out)
 {
     out->r = in->r;
     out->g = in->g;
     out->b = in->b;
 }
 
-void hex2rgb(const int *in, struct rgb *out)
+COLOR_CONVERT_API void hex2rgb(const int *in, struct rgb *out)
 {
     unsigned value = (unsigned)(*in);
 
@@ -453,7 +480,7 @@ void hex2rgb(const int *in, struct rgb *out)
               )                      \
 )
 
-void hex_websafe(int *color)
+COLOR_CONVERT_API void hex_websafe(int *color)
 {
     unsigned value = (unsigned)(*color);
 
@@ -468,7 +495,7 @@ void hex_websafe(int *color)
 
 #undef channel_websafe_
 
-void hsl2hsv(const struct hsl *in, struct hsv *out)
+COLOR_CONVERT_API void hsl2hsv(const struct hsl *in, struct hsv *out)
 {
     out->h = in->h;
 
@@ -479,7 +506,7 @@ void hsl2hsv(const struct hsl *in, struct hsv *out)
         : 0.f;
 }
 
-void hsv2hsl(const struct hsv *in, struct hsl *out)
+COLOR_CONVERT_API void hsv2hsl(const struct hsv *in, struct hsl *out)
 {
     out->h = in->h;
 
@@ -490,14 +517,14 @@ void hsv2hsl(const struct hsv *in, struct hsl *out)
         : 0.f;
 }
 
-void rgb_invert(struct rgb *color)
+COLOR_CONVERT_API void rgb_invert(struct rgb *color)
 {
     color->r = ~color->r;
     color->g = ~color->g;
     color->b = ~color->b;
 }
 
-void rgb_blend(struct rgb *dst, const struct rgba *src)
+COLOR_CONVERT_API void rgb_blend(struct rgb *dst, const struct rgba *src)
 {
     float a = src->a / 255.f;
 
