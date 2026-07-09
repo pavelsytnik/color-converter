@@ -1,19 +1,22 @@
-# Color converter
+# Color Converter
 
-This is a little header-only library providing such data types for color
-representation as ```RGB```, ```RGBA```, ```CMYK```, ```HSL``` and ```HSV```.
-For ```HEX``` use a plain integer.
+A small header-only library for working with colors. It provides data types for
+representing RGB, RGBA, CMYK, HSL, and HSV colors. Hexadecimal colors are
+represented as plain integers.
+
+Although the library is primarily used for color conversion, it has some other
+functions as well.
 
 > [!NOTE]
-> To know more about the API and code in general, see ```color_convert.h```.
+> See `include/color_convert.h` for the full documentation.
 
-## Usage example
+## Usage Example
 
 ```c
-#include <stdio.h>
-
 #define COLOR_CONVERT_IMPLEMENTATION
 #include "color_convert.h"
+
+#include <stdio.h>
 
 int main(void)
 {
@@ -24,19 +27,19 @@ int main(void)
 
     printf("rgb(%d, %d, %d)\n", c1.r, c1.g, c1.b);
     printf("hsl(%.0f deg, %.0f %%, %.0f %%)\n", c2.h, c2.s * 100, c2.l * 100);
-    printf("hex(#%06X)", c3);
+    printf("hex(#%06X)\n", c3);
 
     rgb2hsl(&c1, &c2);
     hsl2rgb(&c2, &c1);
 
-    c2.h += 60.f;
-    if (!hsl_valid(&c2))
-        return -1; /* will never return */
+    c2.h += 200.f;
+    if (!hsl_valid(&c2)) {
+        fprintf(stderr, "Invalid HSL color\n");
+    }
 
     rgb_invert(&c1);
 
-    /* c1 and c4 are blended and then the result is stored back in c1 */
-    rgb_blend(&c1, &c4);
+    rgb_blend(&c1, &c4); /* Blend c4 over c1. */
 
     return 0;
 }
