@@ -364,6 +364,13 @@ COLOR_CONVERT_API void rgb2cmyk(const struct rgb *in, struct cmyk *out)
 
     out->k = 1.f - max_(max_(r, g), b);
 
+    if (out->k == 1.f) {
+        out->c = 0.f;
+        out->m = 0.f;
+        out->y = 0.f;
+        return;
+    }
+
     out->c = (1.f - r - out->k) / (1.f - out->k);
     out->m = (1.f - g - out->k) / (1.f - out->k);
     out->y = (1.f - b - out->k) / (1.f - out->k);
