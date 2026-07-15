@@ -220,6 +220,140 @@ static void test_rgb2hex(void)
     TEST_ASSERT_EQUAL(expected, actual);
 }
 
+static void test_hsl2rgb(void)
+{
+    static const struct {
+        hsl_t source;
+        rgb_t expected;
+    } cases[] = {
+        { {0.0f, 0.0f, 0.000f}, {  0,   0,   0} },
+        { {0.0f, 0.0f, 0.498f}, {127, 127, 127} },
+        { {0.0f, 0.0f, 1.000f}, {255, 255, 255} },
+
+        { {  0.0f, 1.0f, 0.5f}, {255,   0,   0} },
+        { {120.0f, 1.0f, 0.5f}, {  0, 255,   0} },
+        { {240.0f, 1.0f, 0.5f}, {  0,   0, 255} },
+
+        { { 60.0f, 1.0f, 0.5f}, {255, 255,   0} },
+        { {180.0f, 1.0f, 0.5f}, {  0, 255, 255} },
+        { {300.0f, 1.0f, 0.5f}, {255,   0, 255} },
+
+        { {211.5f, 0.562f, 0.508f}, { 59, 126, 200} },
+        { {264.5f, 0.433f, 0.422f}, { 99,  61, 154} },
+        { { 13.9f, 0.889f, 0.390f}, {188,  52,  11} },
+    };
+
+    size_t i;
+
+    for (i = 0; i < ARRAY_SIZE(cases); i++) {
+        rgb_t actual;
+
+        hsl2rgb(&cases[i].source, &actual);
+
+        TEST_ASSERT_EQUAL(cases[i].expected.r, actual.r);
+        TEST_ASSERT_EQUAL(cases[i].expected.g, actual.g);
+        TEST_ASSERT_EQUAL(cases[i].expected.b, actual.b);
+    }
+}
+
+static void test_hsv2rgb(void)
+{
+    static const struct {
+        hsv_t source;
+        rgb_t expected;
+    } cases[] = {
+        { {0.0f, 0.0f, 0.000f}, {  0,   0,   0} },
+        { {0.0f, 0.0f, 0.498f}, {127, 127, 127} },
+        { {0.0f, 0.0f, 1.000f}, {255, 255, 255} },
+
+        { {  0.0f, 1.0f, 1.0f}, {255,   0,   0} },
+        { {120.0f, 1.0f, 1.0f}, {  0, 255,   0} },
+        { {240.0f, 1.0f, 1.0f}, {  0,   0, 255} },
+
+        { { 60.0f, 1.0f, 1.0f}, {255, 255,   0} },
+        { {180.0f, 1.0f, 1.0f}, {  0, 255, 255} },
+        { {300.0f, 1.0f, 1.0f}, {255,   0, 255} },
+
+        { {211.5f, 0.705f, 0.784f}, { 59, 126, 200} },
+        { {264.5f, 0.604f, 0.604f}, { 99,  61, 154} },
+        { { 13.9f, 0.941f, 0.737f}, {188,  52,  11} },
+    };
+
+    size_t i;
+
+    for (i = 0; i < ARRAY_SIZE(cases); i++) {
+        rgb_t actual;
+
+        hsv2rgb(&cases[i].source, &actual);
+
+        TEST_ASSERT_EQUAL(cases[i].expected.r, actual.r);
+        TEST_ASSERT_EQUAL(cases[i].expected.g, actual.g);
+        TEST_ASSERT_EQUAL(cases[i].expected.b, actual.b);
+    }
+}
+
+static void test_cmyk2rgb(void)
+{
+    static const struct {
+        cmyk_t source;
+        rgb_t expected;
+    } cases[] = {
+        { {0.0f, 0.0f, 0.0f, 1.000f}, {  0,   0,   0} },
+        { {0.0f, 0.0f, 0.0f, 0.502f}, {127, 127, 127} },
+        { {0.0f, 0.0f, 0.0f, 0.000f}, {255, 255, 255} },
+
+        { {0.0f, 1.0f, 1.0f, 0.0f}, {255,   0,   0} },
+        { {1.0f, 0.0f, 1.0f, 0.0f}, {  0, 255,   0} },
+        { {1.0f, 1.0f, 0.0f, 0.0f}, {  0,   0, 255} },
+
+        { {0.0f, 0.0f, 1.0f, 0.0f}, {255, 255,   0} },
+        { {1.0f, 0.0f, 0.0f, 0.0f}, {  0, 255, 255} },
+        { {0.0f, 1.0f, 0.0f, 0.0f}, {255,   0, 255} },
+
+        { {0.705f, 0.370f, 0.000f, 0.215f}, { 59, 126, 200} },
+        { {0.357f, 0.604f, 0.000f, 0.396f}, { 99,  61, 154} },
+        { {0.000f, 0.723f, 0.941f, 0.263f}, {188,  52,  11} },
+    };
+
+    size_t i;
+
+    for (i = 0; i < ARRAY_SIZE(cases); i++) {
+        rgb_t actual;
+
+        cmyk2rgb(&cases[i].source, &actual);
+
+        TEST_ASSERT_EQUAL(cases[i].expected.r, actual.r);
+        TEST_ASSERT_EQUAL(cases[i].expected.g, actual.g);
+        TEST_ASSERT_EQUAL(cases[i].expected.b, actual.b);
+    }
+}
+
+static void test_rgba2rgb(void)
+{
+    const rgba_t source = {78, 14, 32, 50};
+    const rgb_t expected = {78, 14, 32};
+
+    rgb_t actual;
+    rgba2rgb(&source, &actual);
+
+    TEST_ASSERT_EQUAL(expected.r, actual.r);
+    TEST_ASSERT_EQUAL(expected.g, actual.g);
+    TEST_ASSERT_EQUAL(expected.b, actual.b);
+}
+
+static void test_hex2rgb(void)
+{
+    const int source = 0x14E97C;
+    const rgb_t expected = {0x14, 0xE9, 0x7C};
+
+    rgb_t actual;
+    hex2rgb(&source, &actual);
+
+    TEST_ASSERT_EQUAL(expected.r, actual.r);
+    TEST_ASSERT_EQUAL(expected.g, actual.g);
+    TEST_ASSERT_EQUAL(expected.b, actual.b);
+}
+
 int main(void)
 {
     UNITY_BEGIN();
@@ -233,6 +367,12 @@ int main(void)
     RUN_TEST(test_rgb2cmyk);
     RUN_TEST(test_rgb2rgba);
     RUN_TEST(test_rgb2hex);
+
+    RUN_TEST(test_hsl2rgb);
+    RUN_TEST(test_hsv2rgb);
+    RUN_TEST(test_cmyk2rgb);
+    RUN_TEST(test_rgba2rgb);
+    RUN_TEST(test_hex2rgb);
 
     return UNITY_END();
 }
