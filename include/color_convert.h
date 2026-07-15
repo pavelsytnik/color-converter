@@ -264,11 +264,11 @@ COLOR_CONVERT_API void hex_websafe(int *color);
 #define float2byte_(x) ((unsigned char)((x) + 0.5f))
 #define norm2byte_(x) (float2byte_((x) * 255.f))
 
-#define rgb_set_(rgb, r_, g_, b_) \
-do {                              \
-    (rgb)->r = (r_);              \
-    (rgb)->g = (g_);              \
-    (rgb)->b = (b_);              \
+#define rgb_set_(r, g, b, rval, gval, bval) \
+do {                                        \
+    *(r) = (rval);                          \
+    *(g) = (gval);                          \
+    *(b) = (bval);                          \
 } while (0)
 
 COLOR_CONVERT_API int hsl_valid(const struct hsl *color)
@@ -404,25 +404,25 @@ COLOR_CONVERT_API void hsl2rgb(const struct hsl *in, struct rgb *out)
     float x = c * (1.f - abs_(fmod_(h, 2.f) - 1.f));
     float m = l - c / 2.f;
 
-    struct rgb rgb;
+    float r, g, b;
 
     if (h >= 0.f && h < 1.f) {
-        rgb_set_(&rgb, c, x, 0);
+        rgb_set_(&r, &g, &b, c, x, 0);
     } else if (h >= 1.f && h < 2.f) {
-        rgb_set_(&rgb, x, c, 0);
+        rgb_set_(&r, &g, &b, x, c, 0);
     } else if (h >= 2.f && h < 3.f) {
-        rgb_set_(&rgb, 0, c, x);
+        rgb_set_(&r, &g, &b, 0, c, x);
     } else if (h >= 3.f && h < 4.f) {
-        rgb_set_(&rgb, 0, x, c);
+        rgb_set_(&r, &g, &b, 0, x, c);
     } else if (h >= 4.f && h < 5.f) {
-        rgb_set_(&rgb, x, 0, c);
+        rgb_set_(&r, &g, &b, x, 0, c);
     } else {
-        rgb_set_(&rgb, c, 0, x);
+        rgb_set_(&r, &g, &b, c, 0, x);
     }
 
-    out->r = norm2byte_(rgb.r + m);
-    out->g = norm2byte_(rgb.g + m);
-    out->b = norm2byte_(rgb.b + m);
+    out->r = norm2byte_(r + m);
+    out->g = norm2byte_(g + m);
+    out->b = norm2byte_(b + m);
 }
 
 COLOR_CONVERT_API void hsv2rgb(const struct hsv *in, struct rgb *out)
@@ -435,25 +435,25 @@ COLOR_CONVERT_API void hsv2rgb(const struct hsv *in, struct rgb *out)
     float x = c * (1.f - abs_(fmod_(h, 2.f) - 1.f));
     float m = v - c;
 
-    struct rgb rgb;
+    float r, g, b;
 
     if (h >= 0.f && h < 1.f) {
-        rgb_set_(&rgb, c, x, 0);
+        rgb_set_(&r, &g, &b, c, x, 0);
     } else if (h >= 1.f && h < 2.f) {
-        rgb_set_(&rgb, x, c, 0);
+        rgb_set_(&r, &g, &b, x, c, 0);
     } else if (h >= 2.f && h < 3.f) {
-        rgb_set_(&rgb, 0, c, x);
+        rgb_set_(&r, &g, &b, 0, c, x);
     } else if (h >= 3.f && h < 4.f) {
-        rgb_set_(&rgb, 0, x, c);
+        rgb_set_(&r, &g, &b, 0, x, c);
     } else if (h >= 4.f && h < 5.f) {
-        rgb_set_(&rgb, x, 0, c);
+        rgb_set_(&r, &g, &b, x, 0, c);
     } else {
-        rgb_set_(&rgb, c, 0, x);
+        rgb_set_(&r, &g, &b, c, 0, x);
     }
 
-    out->r = norm2byte_(rgb.r + m);
-    out->g = norm2byte_(rgb.g + m);
-    out->b = norm2byte_(rgb.b + m);
+    out->r = norm2byte_(r + m);
+    out->g = norm2byte_(g + m);
+    out->b = norm2byte_(b + m);
 }
 
 COLOR_CONVERT_API void cmyk2rgb(const struct cmyk *in, struct rgb *out)
