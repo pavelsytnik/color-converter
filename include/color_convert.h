@@ -417,9 +417,9 @@ COLOR_CONVERT_API void hsl2rgb(const struct hsl *in, struct rgb *out)
         rgb_set_(&rgb, c, 0, x);
     }
 
-    out->r = (unsigned char)((rgb.r + m) * 255.f);
-    out->g = (unsigned char)((rgb.g + m) * 255.f);
-    out->b = (unsigned char)((rgb.b + m) * 255.f);
+    out->r = (unsigned char)((rgb.r + m) * 255.f + 0.5f);
+    out->g = (unsigned char)((rgb.g + m) * 255.f + 0.5f);
+    out->b = (unsigned char)((rgb.b + m) * 255.f + 0.5f);
 }
 
 COLOR_CONVERT_API void hsv2rgb(const struct hsv *in, struct rgb *out)
@@ -448,16 +448,16 @@ COLOR_CONVERT_API void hsv2rgb(const struct hsv *in, struct rgb *out)
         rgb_set_(&rgb, c, 0, x);
     }
 
-    out->r = (unsigned char)((rgb.r + m) * 255.f);
-    out->g = (unsigned char)((rgb.g + m) * 255.f);
-    out->b = (unsigned char)((rgb.b + m) * 255.f);
+    out->r = (unsigned char)((rgb.r + m) * 255.f + 0.5f);
+    out->g = (unsigned char)((rgb.g + m) * 255.f + 0.5f);
+    out->b = (unsigned char)((rgb.b + m) * 255.f + 0.5f);
 }
 
 COLOR_CONVERT_API void cmyk2rgb(const struct cmyk *in, struct rgb *out)
 {
-    out->r = (unsigned char)(255.f * (1.f - in->c) * (1.f - in->k));
-    out->g = (unsigned char)(255.f * (1.f - in->m) * (1.f - in->k));
-    out->b = (unsigned char)(255.f * (1.f - in->y) * (1.f - in->k));
+    out->r = (unsigned char)(255.f * (1.f - in->c) * (1.f - in->k) + 0.5f);
+    out->g = (unsigned char)(255.f * (1.f - in->m) * (1.f - in->k) + 0.5f);
+    out->b = (unsigned char)(255.f * (1.f - in->y) * (1.f - in->k) + 0.5f);
 }
 
 COLOR_CONVERT_API void rgba2rgb(const struct rgba *in, struct rgb *out)
@@ -535,9 +535,9 @@ COLOR_CONVERT_API void rgb_blend(struct rgb *dst, const struct rgba *src)
 {
     float a = src->a / 255.f;
 
-    dst->r = (unsigned char)(dst->r * (1.f - a) + src->r * a);
-    dst->g = (unsigned char)(dst->g * (1.f - a) + src->g * a);
-    dst->b = (unsigned char)(dst->b * (1.f - a) + src->b * a);
+    dst->r = (unsigned char)(dst->r * (1.f - a) + src->r * a + 0.5f);
+    dst->g = (unsigned char)(dst->g * (1.f - a) + src->g * a + 0.5f);
+    dst->b = (unsigned char)(dst->b * (1.f - a) + src->b * a + 0.5f);
 }
 
 #undef rgb_set_
