@@ -44,11 +44,11 @@ extern "C" {
 #endif
 
 #ifndef COLOR_CONVERT_API
-# ifdef COLOR_CONVERT_STATIC
-#  define COLOR_CONVERT_API static
-# else
-#  define COLOR_CONVERT_API extern
-# endif
+#  ifdef COLOR_CONVERT_STATIC
+#    define COLOR_CONVERT_API static
+#  else
+#    define COLOR_CONVERT_API extern
+#  endif
 #endif
 
 /**
